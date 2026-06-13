@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FomoKiller</string>
+    <string name="mode_off">Désactivé</string>
+    <string name="mode_kill_all">Tout Bloquer</string>
+    <string name="mode_vip_only">VIP Seulement</string>
+</resources>

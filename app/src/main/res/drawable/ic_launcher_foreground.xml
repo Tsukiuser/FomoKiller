@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple minimal icon: dark circle with "fk" text -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Background circle -->
+    <path
+        android:fillColor="#0A0A0A"
+        android:pathData="M54,54m-54,0a54,54 0,1 1,108 0a54,54 0,1 1,-108 0" />
+
+    <!-- "F" lettermark simplified -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M32,34 L32,74 L38,74 L38,56 L56,56 L56,50 L38,50 L38,40 L58,40 L58,34 Z" />
+
+    <!-- "K" lettermark simplified -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M64,34 L64,74 L70,74 L70,56 L76,74 L83,74 L76,54 L82,34 L75,34 L70,52 L70,34 Z" />
+
+</vector>
