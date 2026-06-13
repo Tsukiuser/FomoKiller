@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="banner_bg">@color/banner_bg_dark</color>
-    <color name="banner_text">@color/banner_text_dark</color>
-    <color name="banner_text_secondary">@color/banner_text_secondary_dark</color>
+    <color name="banner_bg">#2C2200</color>
+    <color name="banner_text">#FFD95A</color>
+    <color name="banner_text_secondary">#A88A30</color>
+    <color name="md_theme_primary">#F5F5F5</color>
+    <color name="md_theme_on_primary">#0A0A0A</color>
 </resources>

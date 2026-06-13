@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_selected="true">
-        <color android:color="@color/btn_active_text_dark" />
-    </item>
-    <item>
-        <color android:color="@color/btn_inactive_text_dark" />
-    </item>
+    <item android:state_selected="true" android:color="@color/btn_active_text_dark" />
+    <item android:color="@color/btn_inactive_text_dark" />
 </selector>

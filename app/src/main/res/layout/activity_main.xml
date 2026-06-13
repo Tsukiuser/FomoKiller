@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="?attr/colorSurface">
 
-    <!-- Permission banner (hidden when permission granted) -->
     <LinearLayout
         android:id="@+id/permissionBanner"
         android:layout_width="0dp"
@@ -25,9 +24,7 @@
             android:layout_height="wrap_content"
             android:text="Accès aux notifications requis"
             android:textColor="@color/banner_text"
-            android:textSize="13sp"
-            android:fontFamily="@font/inter_medium"
-            android:letterSpacing="0.02" />
+            android:textSize="13sp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -35,11 +32,9 @@
             android:text="Appuyez sur un bouton pour ouvrir les paramètres"
             android:textColor="@color/banner_text_secondary"
             android:textSize="12sp"
-            android:fontFamily="@font/inter_regular"
             android:layout_marginTop="2dp" />
     </LinearLayout>
 
-    <!-- App name -->
     <TextView
         android:id="@+id/appTitle"
         android:layout_width="wrap_content"
@@ -47,7 +42,6 @@
         android:text="fomokiller"
         android:textSize="13sp"
         android:textColor="?attr/colorOnSurfaceVariant"
-        android:fontFamily="@font/inter_medium"
         android:letterSpacing="0.12"
         android:textAllCaps="true"
         app:layout_constraintTop_toBottomOf="@id/permissionBanner"
@@ -55,7 +49,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="48dp" />
 
-    <!-- Buttons container — centered vertically -->
     <LinearLayout
         android:id="@+id/buttonsContainer"
         android:layout_width="0dp"
@@ -68,15 +61,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- ── Button 1: OFF ── -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnOff"
             android:layout_width="match_parent"
             android:layout_height="72dp"
             android:text="Désactivé"
             android:textSize="17sp"
-            android:fontFamily="@font/inter_medium"
-            android:letterSpacing="0.01"
             style="@style/Widget.FomoKiller.ModeButton" />
 
         <TextView
@@ -86,20 +76,16 @@
             android:text="Toutes les notifications passent"
             android:textSize="12sp"
             android:textColor="?attr/colorOnSurfaceVariant"
-            android:fontFamily="@font/inter_regular"
             android:paddingHorizontal="4dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="28dp" />
 
-        <!-- ── Button 2: KILL ALL ── -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnKillAll"
             android:layout_width="match_parent"
             android:layout_height="72dp"
             android:text="Tout Bloquer"
             android:textSize="17sp"
-            android:fontFamily="@font/inter_medium"
-            android:letterSpacing="0.01"
             style="@style/Widget.FomoKiller.ModeButton" />
 
         <TextView
@@ -109,20 +95,16 @@
             android:text="Appui long pour choisir les apps"
             android:textSize="12sp"
             android:textColor="?attr/colorOnSurfaceVariant"
-            android:fontFamily="@font/inter_regular"
             android:paddingHorizontal="4dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="28dp" />
 
-        <!-- ── Button 3: VIP ONLY ── -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnVipOnly"
             android:layout_width="match_parent"
             android:layout_height="72dp"
             android:text="VIP Seulement"
             android:textSize="17sp"
-            android:fontFamily="@font/inter_medium"
-            android:letterSpacing="0.01"
             style="@style/Widget.FomoKiller.ModeButton" />
 
         <TextView
@@ -132,7 +114,6 @@
             android:text="Appui long pour ajouter des apps VIP"
             android:textSize="12sp"
             android:textColor="?attr/colorOnSurfaceVariant"
-            android:fontFamily="@font/inter_regular"
             android:paddingHorizontal="4dp"
             android:layout_marginTop="8dp" />
 
