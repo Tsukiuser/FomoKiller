@@ -14,6 +14,7 @@ object AppState {
     private const val KEY_MODE = "mode"
     private const val KEY_BLOCKED_APPS = "blocked_apps"
     private const val KEY_VIP_APPS = "vip_apps"
+    private const val KEY_OPEN_COUNT = "open_count"
 
     val ALWAYS_ALLOWED_PACKAGES = setOf(
         "com.android.phone",
@@ -39,6 +40,10 @@ object AppState {
         prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
     }
 
+    var openCount: Int
+        get() = prefs.getInt(KEY_OPEN_COUNT, 0)
+        set(value) = prefs.edit().putInt(KEY_OPEN_COUNT, value).apply()
+
     var currentMode: FomoMode
         get() = FomoMode.valueOf(prefs.getString(KEY_MODE, FomoMode.OFF.name) ?: FomoMode.OFF.name)
         set(value) = prefs.edit().putString(KEY_MODE, value.name).apply()
@@ -57,11 +62,9 @@ object AppState {
         return when (currentMode) {
             FomoMode.OFF -> false
             FomoMode.KILL_ALL -> {
-                // Mode ACTIVÉ : Ne bloque QUE les apps sélectionnées dans blockedApps
                 blockedApps.contains(packageName)
             }
             FomoMode.VIP_ONLY -> {
-                // Mode PROTÉGÉ : Bloque TOUT sauf les apps VIP (vipApps)
                 !vipApps.contains(packageName)
             }
         }
