@@ -71,13 +71,28 @@ La confidentialité n'est pas une option, c'est la base :
 
 ---
 
+## 🔋 Optimisation de la batterie
+
+Pour une Utilisation et un fonctionnement optimal, je vous conseille de desactiver l'optimisation de la batterie. L'app est tellement légère que le systeme ne comptabilise même pas. Pour se faire :
+- **Appuez longuement** sur l'icône de l'app à partir de votre écran d'acceuil.
+- **Appuez sur "Information sur l'application",** ou bien l'icône "🛈"
+- Descendez jusqu'à **"Batterie"**
+- Selectionnez **"Non Restreinte"**
+
+---
+
+## ⚠️ Notes Importantes
+
+- Veuillez noter que l'application **peut réagir différemment** en fonction de votre version d'android, en particulier ultérieures à **Android 10**
+- L'application est encore en **BETA** en l'utilisant, vous acceptez que l'application puisse **ne pas fonctionner correctement, voir planter**
+- Certains antivirus peuvent vous envoyer des notifications concernant cette appliaction : En particulier Google Play Protect, **qui vous laisse malgrés tout l'installer en toute sécurité**
+- En version **BETA** l'APK n'est **pas signé** ce qui peux déclencher une popup Google Play à l'installation : **Développez** le message, puis **séléctionnez "Installer Quand même"**
+
+---
+
 ## 🤝 Contribuer
 
-1. Forkez le projet.
-2. Créez votre branche (`git checkout -b feature/AmazingFeature`).
-3. Commitez vos changements (`git commit -m 'Add some AmazingFeature'`).
-4. Pushez sur la branche (`git push origin feature/AmazingFeature`).
-5. Ouvrez une Pull Request.
+Toute **Pull Request** est la bienvenue, je ne **pourrais pas** tout inspecter, c'est pour cette raison que toutes ne seront pas acceptées
 
 ---
 
@@ -88,3 +103,5 @@ Distribué sous la licence MIT. Voir `LICENSE` pour plus d'informations.
 ---
 
 *Développé avec ❤️ pour ceux qui veulent retrouver leur temps.*
+
+---
