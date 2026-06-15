@@ -49,9 +49,10 @@ fomokiller/
 Vous pouvez installer FomoKiller de deux manières :
 
 ### Option 1 : Téléchargement Direct (Recommandé)
-1. Allez dans l'onglet [Releases](https://github.com/votre-compte/fomokiller/releases).
+1. Allez dans l'onglet [Releases](https://github.com/Tsukiuser/FomoKiller/releases).
 2. Téléchargez le dernier fichier `.apk`.
 3. Installez-le sur votre smartphone (autorisez les sources inconnues si nécessaire).
+4. Si vous avez des **problèmes d'installation** à cause de **Google Play Protect**, réferez-vous à [Cette section](https://github.com/Tsukiuser/FomoKiller#%EF%B8%8F-notes-importantes)
 
 ### Option 2 : Compilation depuis les sources
 1. Clonez ce dépôt.
