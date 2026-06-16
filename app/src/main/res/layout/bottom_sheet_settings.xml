@@ -8,33 +8,24 @@
     android:orientation="vertical"
     android:clickable="true"
     android:focusable="true"
-    app:behavior_hideable="false"
-    app:behavior_peekHeight="64dp"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="0dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-    <!-- Poignée / Header cliquable pour ouvrir -->
+    <!-- Header cliquable (optionnel si geste plein écran) -->
     <LinearLayout
         android:id="@+id/settingsHeader"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="32dp"
         android:gravity="center"
         android:orientation="vertical">
 
         <View
             android:layout_width="32dp"
             android:layout_height="4dp"
+            android:layout_marginTop="12dp"
             android:background="#40808080"
             android:backgroundTint="?attr/colorOnSurfaceVariant" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="PARAMÈTRES"
-            android:textSize="11sp"
-            android:letterSpacing="0.1"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:textStyle="bold" />
     </LinearLayout>
 
     <View
@@ -84,10 +75,10 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/textAbout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:text="FomoKiller v1.1\nOpen Source and Local"
             android:textAlignment="center"
             android:textColor="?attr/colorOnSurfaceVariant"
             android:textSize="12sp" />

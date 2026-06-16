@@ -3,6 +3,10 @@
     <color name="banner_bg">#2C2200</color>
     <color name="banner_text">#FFD95A</color>
     <color name="banner_text_secondary">#A88A30</color>
-    <color name="md_theme_primary">#F5F5F5</color>
-    <color name="md_theme_on_primary">#0A0A0A</color>
+
+    <color name="md_theme_primary_dark">#F5F5F5</color>
+    <color name="md_theme_on_primary_dark">#0A0A0A</color>
+    <color name="surface_dark">#0A0A0A</color>
+    <color name="on_surface_dark">#F5F5F5</color>
+    <color name="on_surface_variant_dark">#A0A0A0</color>
 </resources>

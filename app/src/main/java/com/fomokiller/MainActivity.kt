@@ -14,7 +14,11 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
 import android.service.notification.NotificationListenerService
+import android.text.Html
+import android.text.method.LinkMovementMethod
+import android.view.GestureDetector
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
@@ -36,6 +40,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var settingsBehavior: BottomSheetBehavior<View>
+    private lateinit var gestureDetector: GestureDetector
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -60,6 +65,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         
         setupSettingsPanel()
+        setupGestureDetector()
         
         AppState.openCount++
         if (AppState.openCount % 6 == 0 && !isIgnoringBatteryOptimizations()) {
@@ -70,17 +76,56 @@ class MainActivity : AppCompatActivity() {
         updateUI()
     }
 
+    private fun setupGestureDetector() {
+        gestureDetector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+                if (e1 != null && e2 != null) {
+                    val diffY = e2.y - e1.y
+                    if (diffY < -100 && Math.abs(velocityY) > 100) { // Swipe UP
+                        settingsBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                        return true
+                    }
+                }
+                return false
+            }
+        })
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        // Le geste ne fonctionne que si aucune autre modale n'est ouverte
+        // (BottomSheetDialog n'expose pas facilement son état, mais on peut vérifier si settings est caché)
+        if (settingsBehavior.state == BottomSheetBehavior.STATE_HIDDEN || settingsBehavior.state == BottomSheetBehavior.STATE_SETTLING) {
+            gestureDetector.onTouchEvent(ev)
+        }
+        return super.dispatchTouchEvent(ev)
+    }
+
     private fun setupSettingsPanel() {
         val bottomSheet = findViewById<View>(R.id.settingsBottomSheet)
+        val scrim = findViewById<View>(R.id.settingsScrim)
         settingsBehavior = BottomSheetBehavior.from(bottomSheet)
+        settingsBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         
-        val header = findViewById<View>(R.id.settingsHeader)
-        header.setOnClickListener {
-            if (settingsBehavior.state == BottomSheetBehavior.STATE_COLLAPSED) {
-                settingsBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-            } else {
-                settingsBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        settingsBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                    scrim.visibility = View.GONE
+                } else {
+                    scrim.visibility = View.VISIBLE
+                }
             }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                // slideOffset va de -1 (caché) à 1 (étendu). On veut 0 à 1.
+                // Ici avec hideable=true et peek=0, 0 est "collapsé/caché" et 1 est étendu.
+                val alpha = slideOffset.coerceIn(0f, 1f)
+                scrim.alpha = alpha * 0.6f // Max 60% d'opacité
+                scrim.visibility = if (alpha > 0) View.VISIBLE else View.GONE
+            }
+        })
+
+        scrim.setOnClickListener {
+            settingsBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         }
 
         val switchRedisplay = findViewById<MaterialSwitch>(R.id.switchRedisplay)
@@ -92,6 +137,29 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             AppState.reDisplayNotifications = isChecked
+        }
+
+        loadAboutMarkdown()
+    }
+
+    private fun loadAboutMarkdown() {
+        val textAbout = findViewById<TextView>(R.id.textAbout)
+        try {
+            val content = assets.open("about.md").bufferedReader().use { it.readText() }
+            // Conversion simple Markdown vers HTML (on gère les liens [text](url))
+            val htmlContent = content
+                .replace(Regex("\\[(.*?)\\]\\((.*?)\\)"), "<a href=\"$2\">$1</a>")
+                .replace("\n", "<br/>")
+            
+            textAbout.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                Html.fromHtml(htmlContent, Html.FROM_HTML_MODE_COMPACT)
+            } else {
+                @Suppress("DEPRECATION")
+                Html.fromHtml(htmlContent)
+            }
+            textAbout.movementMethod = LinkMovementMethod.getInstance()
+        } catch (e: Exception) {
+            textAbout.text = "FomoKiller v1.1"
         }
     }
 

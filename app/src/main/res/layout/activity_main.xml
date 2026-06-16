@@ -126,6 +126,15 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- Scrim pour l'assombrissement -->
+    <View
+        android:id="@+id/settingsScrim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/scrim_color"
+        android:alpha="0"
+        android:visibility="gone" />
+
     <!-- Inclusion du panneau de paramètres (BottomSheet persistante) -->
     <include layout="@layout/bottom_sheet_settings" />
 

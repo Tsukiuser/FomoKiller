@@ -1,34 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Basic Colors -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
     <color name="fomo_black">#0A0A0A</color>
-    <color name="fomo_white">#F8F8F8</color>
 
+    <!-- Light Theme Colors -->
+    <color name="md_theme_primary">#0A0A0A</color>
+    <color name="md_theme_on_primary">#F5F5F5</color>
     <color name="surface_light">#FFFFFF</color>
     <color name="on_surface_light">#0A0A0A</color>
-    <color name="on_surface_variant_light">#6B6B6B</color>
+    <color name="on_surface_variant_light">#666666</color>
 
-    <color name="surface_dark">#0A0A0A</color>
-    <color name="on_surface_dark">#F5F5F5</color>
-    <color name="on_surface_variant_dark">#9A9A9A</color>
-
-    <color name="btn_active_bg_light">#0A0A0A</color>
-    <color name="btn_active_text_light">#FFFFFF</color>
-    <color name="btn_inactive_bg_light">#F0F0F0</color>
-    <color name="btn_inactive_text_light">#6B6B6B</color>
-    <color name="btn_stroke_light">#E0E0E0</color>
-
-    <color name="btn_active_bg_dark">#F5F5F5</color>
-    <color name="btn_active_text_dark">#0A0A0A</color>
-    <color name="btn_inactive_bg_dark">#1C1C1C</color>
-    <color name="btn_inactive_text_dark">#6B6B6B</color>
-    <color name="btn_stroke_dark">#2C2C2C</color>
-
-    <color name="banner_bg">#FFF3CD</color>
-    <color name="banner_text">#6D4C00</color>
-    <color name="banner_text_secondary">#9A7030</color>
-
-    <color name="md_theme_primary">#0A0A0A</color>
-    <color name="md_theme_on_primary">#FFFFFF</color>
+    <!-- Dark Theme Colors -->
     <color name="md_theme_primary_dark">#F5F5F5</color>
     <color name="md_theme_on_primary_dark">#0A0A0A</color>
+    <color name="surface_dark">#0A0A0A</color>
+    <color name="on_surface_dark">#F5F5F5</color>
+    <color name="on_surface_variant_dark">#A0A0A0</color>
+
+    <!-- App Specific Colors (Light) -->
+    <color name="banner_bg">#FFF5F5F5</color>
+    <color name="banner_text">#FF333333</color>
+    <color name="banner_text_secondary">#FF666666</color>
+    <color name="btn_stroke_light">#FFE0E0E0</color>
+    <color name="btn_active_bg_light">#0A0A0A</color>
+    <color name="btn_inactive_bg_light">#FFFFFF</color>
+    <color name="btn_active_text_light">#F5F5F5</color>
+    <color name="btn_inactive_text_light">#666666</color>
+
+    <!-- App Specific Colors (Dark) -->
+    <color name="btn_active_bg_dark">#F5F5F5</color>
+    <color name="btn_inactive_bg_dark">#1A1A1A</color>
+    <color name="btn_active_text_dark">#0A0A0A</color>
+    <color name="btn_inactive_text_dark">#808080</color>
+    <color name="btn_stroke_dark">#333333</color>
+
+    <color name="scrim_color">#99000000</color>
 </resources>
