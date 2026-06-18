@@ -41,17 +41,15 @@ jobs:
         if: steps.check_trigger.outputs.should_release == 'true'
         run: chmod +x gradlew
 
+      - name: Setup Gradle
+        if: steps.check_trigger.outputs.should_release == 'true'
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.2 # On force la version du projet au lieu de laisser GitHub utiliser la 9.x
+
       - name: Build Debug APK
         if: steps.check_trigger.outputs.should_release == 'true'
-        run: |
-          # Use the gradle version pre-installed on the runner as a fallback 
-          # or try to run gradlew directly. classNotFound usually means gradle-wrapper.jar is missing.
-          if [ -f "gradle/wrapper/gradle-wrapper.jar" ]; then
-            ./gradlew assembleDebug
-          else
-            echo "Gradle wrapper jar not found, attempting to use system gradle"
-            gradle assembleDebug
-          fi
+        run: gradle assembleDebug
 
       - name: Get Version
         if: steps.check_trigger.outputs.should_release == 'true'
