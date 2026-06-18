@@ -5,8 +5,8 @@ on:
     branches:
       - main
       - master
-    paths:
-      - 'RELEASE_TRIGGER'
+#   paths:
+#     - 'RELEASE_TRIGGER'
 
 jobs:
   build-and-release:
@@ -18,11 +18,15 @@ jobs:
       - name: Check Release Trigger
         id: check_trigger
         run: |
-          TRIGGER_CONTENT=$(cat RELEASE_TRIGGER | tr '[:upper:]' '[:lower:]' | xargs)
-          if [ "$TRIGGER_CONTENT" = "y" ] || [ "$TRIGGER_CONTENT" = "yes" ]; then
+          # Read the file, remove all whitespace/newlines, and convert to lowercase
+          TRIGGER_CONTENT=$(tr -d '[:space:]' < RELEASE_TRIGGER | tr '[:upper:]' '[:lower:]')
+          echo "Content found: '$TRIGGER_CONTENT'"
+          if [[ "$TRIGGER_CONTENT" == "y" ]] || [[ "$TRIGGER_CONTENT" == "yes" ]]; then
             echo "should_release=true" >> $GITHUB_OUTPUT
+            echo "Trigger matched!"
           else
             echo "should_release=false" >> $GITHUB_OUTPUT
+            echo "Trigger did not match."
           fi
 
       - name: Set up JDK 17
