@@ -1,0 +1,59 @@
+name: Automated Release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'RELEASE_TRIGGER'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check Release Trigger
+        id: check_trigger
+        run: |
+          TRIGGER_CONTENT=$(cat RELEASE_TRIGGER | tr '[:upper:]' '[:lower:]' | xargs)
+          if [ "$TRIGGER_CONTENT" = "y" ] || [ "$TRIGGER_CONTENT" = "yes" ]; then
+            echo "should_release=true" >> $GITHUB_OUTPUT
+          else
+            echo "should_release=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Set up JDK 17
+        if: steps.check_trigger.outputs.should_release == 'true'
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        if: steps.check_trigger.outputs.should_release == 'true'
+        run: chmod +x gradlew
+
+      - name: Build Debug APK
+        if: steps.check_trigger.outputs.should_release == 'true'
+        run: ./gradlew assembleDebug
+
+      - name: Get Version
+        if: steps.check_trigger.outputs.should_release == 'true'
+        id: get_version
+        run: echo "version=$(date +'%Y.%m.%d-%H%M')" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        if: steps.check_trigger.outputs.should_release == 'true'
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.get_version.outputs.version }}
+          name: Release ${{ steps.get_version.outputs.version }}
+          draft: false
+          prerelease: false
+          files: app/build/outputs/apk/debug/app-debug.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

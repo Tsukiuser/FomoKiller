@@ -1,43 +1,43 @@
 # 📱 FomoKiller
 
-**FomoKiller** est une application Android open-source conçue pour vous redonner le contrôle sur vos distractions. Marre d'être interrompu par des notifications inutiles tout en ayant peur de rater un appel important ? FomoKiller est là pour ça.
+**FomoKiller** is an open-source Android app designed to give you back control over your distractions. Tired of being interrupted by useless notifications while still being afraid of missing an important call? FomoKiller is here for that.
 
 ---
 
-## ✨ Caractéristiques
+## ✨ Features
 
-- **🛡️ 100% Local & Privé** : Pas de serveur, pas de collecte de données. Vos notifications restent sur votre téléphone.
-- **🚀 Sans fioritures** : Une interface minimaliste pour une efficacité maximale.
-- **⚙️ Trois modes de concentration** :
-  - **Désactivé** : La vie normale. Toutes les notifications passent.
-  - **Activé (Sélectif)** : Bloquez uniquement les coupables (réseaux sociaux, jeux, etc.). Tout le reste passe.
-  - **Protégé (VIP)** : Le mode concentration ultime. Tout est bloqué, sauf vos applications VIP (famille, travail, urgences) et les appels système.
-
----
-
-## 🛠️ Stack Technique
-
-- **Langage** : Kotlin
-- **Architecture** : Pattern Singleton pour l'état global (`AppState`) et Service lié.
-- **UI** : Material Design 3, ViewBinding, BottomSheet pour la sélection d'apps.
-- **Core** : `NotificationListenerService` pour l'interception chirurgicale des notifications.
-- **Stockage** : `SharedPreferences` pour une persistance ultra-légère.
+- **🛡️ 100% Local & Private**: No server, no data collection. Your notifications stay on your phone.
+- **🚀 No frills**: A minimalist interface for maximum efficiency.
+- **⚙️ Three focus modes**:
+  - **Disabled**: Normal life. All notifications go through.
+  - **Enabled (Selective)**: Block only the culprits (social media, games, etc.). Everything else goes through.
+  - **Protected (VIP)**: The ultimate focus mode. Everything is blocked, except your VIP apps (family, work, emergencies) and system calls.
 
 ---
 
-## 📂 Structure du Projet
+## 🛠️ Tech Stack
+
+- **Language**: Kotlin
+- **Architecture**: Singleton pattern for global state (`AppState`) and bound Service.
+- **UI**: Material Design 3, ViewBinding, BottomSheet for app selection.
+- **Core**: `NotificationListenerService` for surgical notification interception.
+- **Storage**: `SharedPreferences` for ultra-lightweight persistence.
+
+---
+
+## 📂 Project Structure
 
 ```text
 fomokiller/
 ├── app/
 │   ├── src/main/
 │   │   ├── java/com/fomokiller/
-│   │   │   ├── MainActivity.kt           # Interface principale & logique UI
-│   │   │   ├── FomoNotificationService.kt # Cœur du système (Interception)
-│   │   │   ├── AppState.kt                # Gestion des modes et préférences
-│   │   │   └── BootReceiver.kt            # Relance le service au démarrage
+│   │   │   ├── MainActivity.kt           # Main interface & UI logic
+│   │   │   ├── FomoNotificationService.kt # System core (Interception)
+│   │   │   ├── AppState.kt                # Mode and preferences management
+│   │   │   └── BootReceiver.kt            # Restarts the service on boot
 │   │   └── res/
-│   │       ├── layout/                    # Layouts XML (Main, BottomSheet, Item)
+│   │       ├── layout/                    # XML layouts (Main, BottomSheet, Item)
 │   │       └── values/                    # Themes, Colors, Strings
 └── README.md
 ```
@@ -46,63 +46,63 @@ fomokiller/
 
 ## 📥 Installation
 
-Vous pouvez installer FomoKiller de deux manières :
+You can install FomoKiller in two ways:
 
-### Option 1 : Téléchargement Direct (Recommandé)
-1. Allez dans l'onglet [Releases](https://github.com/Tsukiuser/FomoKiller/releases).
-2. Téléchargez le dernier fichier `.apk`.
-3. Installez-le sur votre smartphone (autorisez les sources inconnues si nécessaire).
-4. Si vous avez des **problèmes d'installation** à cause de **Google Play Protect**, réferez-vous à [Cette section](https://github.com/Tsukiuser/FomoKiller#%EF%B8%8F-notes-importantes)
+### Option 1: Direct Download (Recommended)
+1. Go to the [Releases](https://github.com/Tsukiuser/FomoKiller/releases) tab.
+2. Download the latest `.apk` file.
+3. Install it on your smartphone (allow unknown sources if necessary).
+4. If you have **installation issues** because of **Google Play Protect**, refer to [this section](https://github.com/Tsukiuser/FomoKiller#%EF%B8%8F-notes-importantes)
 
-### Option 2 : Compilation depuis les sources
-1. Clonez ce dépôt.
-2. Ouvrez le projet dans **Android Studio**.
-3. Compilez et installez (`./gradlew assembleDebug`).
+### Option 2: Build from source
+1. Clone this repository.
+2. Open the project in **Android Studio**.
+3. Build and install (`./gradlew assembleDebug`).
 
-> **Note importante** : Pour fonctionner, l'application nécessite l'autorisation **"Accès aux notifications"**. L'application vous guidera vers les paramètres au premier lancement.
-
----
-
-## 🔒 Confidentialité
-
-La confidentialité n'est pas une option, c'est la base :
-- **Zéro accès internet** : L'application n'a même pas la permission `INTERNET`.
-- **Zéro Cloud** : Aucune donnée ne quitte jamais votre appareil.
-- **Open Source** : Le code est transparent et auditable par tous.
+> **Important note**: To work, the app requires **"Notification Access"** permission. The app will guide you to the settings on first launch.
 
 ---
 
-## 🔋 Optimisation de la batterie
+## 🔒 Privacy
 
-Pour une Utilisation et un fonctionnement optimal, je vous conseille de desactiver l'optimisation de la batterie. L'app est tellement légère que le systeme ne comptabilise même pas. Pour se faire :
-- **Appuez longuement** sur l'icône de l'app à partir de votre écran d'acceuil.
-- **Appuez sur "Information sur l'application",** ou bien l'icône "🛈"
-- Descendez jusqu'à **"Batterie"**
-- Selectionnez **"Non Restreinte"**
-
----
-
-## ⚠️ Notes Importantes
-
-- Veuillez noter que l'application **peut réagir différemment** en fonction de votre version d'android, en particulier ultérieures à **Android 10**
-- L'application est encore en **BETA** en l'utilisant, vous acceptez que l'application puisse **ne pas fonctionner correctement, voir planter**
-- Certains antivirus peuvent vous envoyer des notifications concernant cette appliaction : En particulier Google Play Protect, **qui vous laisse malgrés tout l'installer en toute sécurité**
-- En version **BETA** l'APK n'est **pas signé** ce qui peux déclencher une popup Google Play à l'installation : **Développez** le message, puis **séléctionnez "Installer Quand même"**
+Privacy isn't an option, it's the foundation:
+- **Zero internet access**: The app doesn't even have the `INTERNET` permission.
+- **Zero Cloud**: No data ever leaves your device.
+- **Open Source**: The code is transparent and auditable by everyone.
 
 ---
 
-## 🤝 Contribuer
+## 🔋 Battery Optimization
 
-Toute **Pull Request** est la bienvenue, je ne **pourrais pas** tout inspecter, c'est pour cette raison que toutes ne seront pas acceptées
-
----
-
-## 📄 Licence
-
-Distribué sous la licence MIT. Voir `LICENSE` pour plus d'informations.
+For optimal use and operation, I recommend disabling battery optimization. The app is so lightweight that the system doesn't even register it. To do this:
+- **Long-press** the app icon from your home screen.
+- **Tap "App info,"** or the "🛈" icon
+- Scroll down to **"Battery"**
+- Select **"Unrestricted"**
 
 ---
 
-*Développé avec ❤️ pour ceux qui veulent retrouver leur temps.*
+## ⚠️ Important Notes
+
+- Please note that the app **may behave differently** depending on your Android version, particularly versions **later than Android 10**
+- The app is still in **BETA**, by using it you accept that the app **may not function properly, or even crash**
+- Some antivirus software may send you notifications about this app: particularly Google Play Protect, **which still lets you install it safely regardless**
+- In the **BETA** version, the APK is **unsigned**, which may trigger a Google Play popup during installation: **Expand** the message, then **select "Install anyway"**
+
+---
+
+## 🤝 Contributing
+
+Any **Pull Request** is welcome, I **won't be able** to inspect everything, which is why not all of them will be accepted
+
+---
+
+## 📄 License
+
+Distributed under the MIT license. See `LICENSE` for more information.
+
+---
+
+*Developed with ❤️ for those who want to reclaim their time.*
 
 ---

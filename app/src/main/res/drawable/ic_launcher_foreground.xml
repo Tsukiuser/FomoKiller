@@ -1,24 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Simple minimal icon: dark circle with "fk" text -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- Background circle -->
-    <path
-        android:fillColor="#0A0A0A"
-        android:pathData="M54,54m-54,0a54,54 0,1 1,108 0a54,54 0,1 1,-108 0" />
-
-    <!-- "F" lettermark simplified -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M32,34 L32,74 L38,74 L38,56 L56,56 L56,50 L38,50 L38,40 L58,40 L58,34 Z" />
-
-    <!-- "K" lettermark simplified -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M64,34 L64,74 L70,74 L70,56 L76,74 L83,74 L76,54 L82,34 L75,34 L70,52 L70,34 Z" />
-
+    <!-- On centre le logo (96x75) dans un conteneur de 108x108 (standard Adaptive Icon) -->
+    <!-- Translation: x = (108-96)/2 = 6, y = (108-75)/2 = 16.5 -->
+    <group
+        android:translateX="6"
+        android:translateY="16.5">
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M7.83984 46.1417C-2.61328 35.6525 -2.61328 18.6463 7.83984 8.15711C18.293 -2.33203 35.2408 -2.33203 45.694 8.15711L66.6133 29.1486C77.0664 39.6377 77.0664 56.644 66.6133 67.1331C56.1602 77.6223 39.2123 77.6223 28.7592 67.1331L7.83984 46.1417Z"/>
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M50.306 7.86686C60.7592 -2.62229 77.707 -2.62229 88.1602 7.86686C98.6133 18.356 98.6133 35.3623 88.1602 45.8514L67.2408 66.8429C56.7877 77.332 39.8398 77.332 29.3867 66.8429C18.9335 56.3537 18.9335 39.3475 29.3867 28.8583L50.306 7.86686Z"/>
+    </group>
 </vector>

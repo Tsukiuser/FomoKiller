@@ -139,6 +139,24 @@ class MainActivity : AppCompatActivity() {
             AppState.reDisplayNotifications = isChecked
         }
 
+        // Configuration du mode de raccourci (Segmented Button)
+        val prefs = getSharedPreferences("fomokiller_prefs", Context.MODE_PRIVATE)
+        val toggleGroup = findViewById<com.google.android.material.button.MaterialButtonToggleGroup>(R.id.toggleGroupTileMode)
+        val initialMode = prefs.getString("tile_target_mode", "KILL_ALL") ?: "KILL_ALL"
+        
+        if (initialMode == "KILL_ALL") {
+            toggleGroup.check(R.id.btnTileKillAll)
+        } else {
+            toggleGroup.check(R.id.btnTileVipOnly)
+        }
+
+        toggleGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (isChecked) {
+                val modeStr = if (checkedId == R.id.btnTileKillAll) "KILL_ALL" else "VIP_ONLY"
+                prefs.edit().putString("tile_target_mode", modeStr).apply()
+            }
+        }
+
         loadAboutMarkdown()
     }
 

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FomoKiller</string>
+    <string name="mode_off">Désactivé</string>
+    <string name="mode_kill_all">Activé</string>
+    <string name="mode_vip_only">Protégé</string>
+
+    <!-- Settings -->
+    <string name="settings_tile_mode_title">Mode du raccourci</string>
+    <string name="settings_tile_mode_desc">Le mode qui sera activé via la tuile de notification</string>
+
+    <!-- Quick Settings Tile -->
+    <string name="tile_label">FomoKiller</string>
+    <string name="tile_subtitle_active">Mode : %s</string>
+    <string name="tile_subtitle_off">Désactivé</string>
+</resources>
