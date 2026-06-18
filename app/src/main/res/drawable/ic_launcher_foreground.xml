@@ -4,11 +4,15 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- On centre le logo (96x75) dans un conteneur de 108x108 (standard Adaptive Icon) -->
-    <!-- Translation: x = (108-96)/2 = 6, y = (108-75)/2 = 16.5 -->
+    <!-- Scale: 0.55 (Reduced from 1.0 to fit safe zone and avoid "enormous" look) -->
+    <!-- Original width 96 * 0.55 = 52.8 -->
+    <!-- Original height 75 * 0.55 = 41.25 -->
+    <!-- Translate to center: x = (108 - 52.8)/2 = 27.6, y = (108 - 41.25)/2 = 33.375 -->
     <group
-        android:translateX="6"
-        android:translateY="16.5">
+        android:scaleX="0.55"
+        android:scaleY="0.55"
+        android:translateX="27.6"
+        android:translateY="33.375">
         <path
             android:fillColor="#FFFFFF"
             android:pathData="M7.83984 46.1417C-2.61328 35.6525 -2.61328 18.6463 7.83984 8.15711C18.293 -2.33203 35.2408 -2.33203 45.694 8.15711L66.6133 29.1486C77.0664 39.6377 77.0664 56.644 66.6133 67.1331C56.1602 77.6223 39.2123 77.6223 28.7592 67.1331L7.83984 46.1417Z"/>
