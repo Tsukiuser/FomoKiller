@@ -5,10 +5,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
@@ -194,11 +190,9 @@ class FomoNotificationService : NotificationListenerService() {
             
             // Récupération des infos de l'app d'origine pour l'identité
             val appLabel: String
-            val appIcon: Drawable
             try {
                 val appInfo = pm.getApplicationInfo(held.packageName, 0)
                 appLabel = pm.getApplicationLabel(appInfo).toString()
-                appIcon = pm.getApplicationIcon(appInfo)
             } catch (e: Exception) {
                 repostSimple(held) // Fallback si l'app a été désinstallée entre temps
                 return
@@ -217,8 +211,8 @@ class FomoNotificationService : NotificationListenerService() {
 
             builder.setContentTitle(title)
                 .setContentText(text)
-                .setSmallIcon(held.notification.smallIcon) // On utilise l'icône originale au lieu de ic_launcher
-                .setLargeIcon(drawableToBitmap(appIcon)) // Icône de l'app d'origine
+                .setSmallIcon(held.notification.smallIcon) 
+                .setLargeIcon(held.notification.getLargeIcon()) // On récupère directement l'icône de la notif d'origine
                 .setSubText(appLabel) 
                 .setContentIntent(held.notification.contentIntent)
                 .setDeleteIntent(held.notification.deleteIntent)
@@ -261,16 +255,5 @@ class FomoNotificationService : NotificationListenerService() {
         } catch (e: Exception) { /* Echec total */ }
     }
 
-    private fun drawableToBitmap(drawable: Drawable): Bitmap {
-        if (drawable is BitmapDrawable) return drawable.bitmap
-        val bitmap = Bitmap.createBitmap(
-            drawable.intrinsicWidth.coerceAtLeast(1),
-            drawable.intrinsicHeight.coerceAtLeast(1),
-            Bitmap.Config.ARGB_8888
-        )
-        val canvas = Canvas(bitmap)
-        drawable.setBounds(0, 0, canvas.width, canvas.height)
-        drawable.draw(canvas)
-        return bitmap
-    }
+
 }

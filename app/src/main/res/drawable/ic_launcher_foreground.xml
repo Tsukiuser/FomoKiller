@@ -4,14 +4,14 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- Nouveau logo SVG (Bouclier) -->
-    <!-- Scale factor: 0.2 (Original 289x361 -> approx 58x72 to fit nicely) -->
-    <!-- Translate to center: x = (108 - (289*0.2))/2 = 25.1, y = (108 - (361*0.2))/2 = 17.9 -->
+    <!-- Scale factor: 0.15 (Reduced from 0.2 to de-zoom and leave more space from edges) -->
+    <!-- Original 289x361 -> approx 43.3x54.1 -->
+    <!-- Translate to center: x = (108 - 43.3)/2 = 32.35, y = (108 - 54.1)/2 = 26.95 -->
     <group
-        android:scaleX="0.2"
-        android:scaleY="0.2"
-        android:translateX="25.1"
-        android:translateY="17.9">
+        android:scaleX="0.15"
+        android:scaleY="0.15"
+        android:translateX="32.35"
+        android:translateY="26.95">
         <path
             android:fillColor="#FFFFFF"
             android:pathData="M144.5 361C102.655 350.471 68.1107 326.479 40.8664 289.026C13.6221 251.572 0 209.982 0 164.255V54.15L144.5 0L289 54.15V164.255C289 209.982 275.378 251.572 248.134 289.026C220.889 326.479 186.345 350.471 144.5 361ZM144.5 323.095C175.808 313.167 201.698 293.312 222.169 263.53C242.64 233.748 252.875 200.656 252.875 164.255V78.9688L144.5 38.3562L36.125 78.9688V164.255C36.125 200.656 46.3604 233.748 66.8313 263.53C87.3021 293.312 113.192 313.167 144.5 323.095Z"/>
