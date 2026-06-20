@@ -5,9 +5,50 @@
     <string name="mode_kill_all">Enabled</string>
     <string name="mode_vip_only">Protected</string>
 
+    <string name="label_off">All notifications pass through</string>
+    <string name="label_kill_all_default">Long press to choose apps to block</string>
+    <string name="label_vip_only_default">Long press to choose VIP apps</string>
+
+    <string name="permission_banner_title">Notification access required</string>
+    <string name="permission_banner_desc">Tap a button to open settings</string>
+
+    <!-- UI Plurals/Dynamic (Note: Android doesn't support complex plurals easily in code without resources.getQuantityString) -->
+    <string name="label_blocked_count_single">1 app blocked</string>
+    <string name="label_blocked_count_plural">%d apps blocked</string>
+    <string name="label_vip_count_single">Everything blocked except 1 VIP + system</string>
+    <string name="label_vip_count_plural">Everything blocked except %d VIPs + system</string>
+
     <!-- Settings -->
     <string name="settings_tile_mode_title">Shortcut Mode</string>
     <string name="settings_tile_mode_desc">The mode that will be activated via the notification tile</string>
+    <string name="settings_restore_title">Restore notifications</string>
+    <string name="settings_restore_desc">Re-display blocked alerts at the end of the session</string>
+
+    <!-- App Picker -->
+    <string name="picker_title_blocked">Apps to block</string>
+    <string name="picker_title_vip">VIP Apps</string>
+    <string name="picker_subtitle_blocked">Blocked in Enabled mode</string>
+    <string name="picker_subtitle_vip">Allowed in Protected mode</string>
+    <string name="picker_btn_cancel">Cancel</string>
+    <string name="picker_btn_confirm">Confirm</string>
+    <string name="picker_btn_confirm_count">Confirm (%d)</string>
+
+    <!-- Toasts / Messages -->
+    <string name="toast_permission_denied">Permission denied: notifications cannot be restored</string>
+    <string name="toast_initializing">Initializing service...</string>
+    <string name="toast_request_access">Please allow notification access</string>
+    <string name="msg_restored">Notification restored</string>
+    <string name="error_msg">Error: %s</string>
+
+    <!-- Restricted Settings / Sensitive Permissions -->
+    <string name="restricted_settings_title">Restricted settings 🔒</string>
+    <string name="restricted_settings_desc">On some devices (Android 13+), you must allow \"Restricted Settings\" to enable notification access.\n\n1. Open <b>App Info</b> for FomoKiller\n2. Tap the <b>three dots (⋮)</b> at the top right\n3. Select <b>\"Allow restricted settings\"</b>\n4. Return here to enable the service.</string>
+    <string name="restricted_settings_open">Open App Info</string>
+    <string name="restricted_settings_ignore">Later</string>
+    <string name="battery_tip_title">Battery optimization 🔋</string>
+    <string name="battery_tip_desc">To ensure FomoKiller intercepts and restores your notifications without delay, we recommend disabling background restrictions.\n\nThe app is extremely lightweight (0% battery usage observed) and will not slow down your phone.</string>
+    <string name="battery_tip_open">Grant permission</string>
+    <string name="battery_tip_ignore">Later</string>
 
     <!-- Quick Settings Tile -->
     <string name="tile_label">FomoKiller</string>

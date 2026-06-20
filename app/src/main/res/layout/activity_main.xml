@@ -27,14 +27,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Accès aux notifications requis"
+                android:text="@string/permission_banner_title"
                 android:textColor="@color/banner_text"
                 android:textSize="13sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Appuyez sur un bouton pour ouvrir les paramètres"
+                android:text="@string/permission_banner_desc"
                 android:textColor="@color/banner_text_secondary"
                 android:textSize="12sp"
                 android:layout_marginTop="2dp" />
@@ -44,7 +44,7 @@
             android:id="@+id/appTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="fomokiller"
+            android:text="@string/app_name"
             android:textSize="13sp"
             android:textColor="?attr/colorOnSurfaceVariant"
             android:letterSpacing="0.12"
@@ -70,7 +70,7 @@
                 android:id="@+id/btnOff"
                 android:layout_width="match_parent"
                 android:layout_height="72dp"
-                android:text="Désactivé"
+                android:text="@string/mode_off"
                 android:textSize="17sp"
                 style="@style/Widget.FomoKiller.ModeButton" />
 
@@ -78,7 +78,7 @@
                 android:id="@+id/labelOff"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Toutes les notifications passent"
+                android:text="@string/label_off"
                 android:textSize="12sp"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:paddingHorizontal="4dp"
@@ -89,7 +89,7 @@
                 android:id="@+id/btnKillAll"
                 android:layout_width="match_parent"
                 android:layout_height="72dp"
-                android:text="Activé"
+                android:text="@string/mode_kill_all"
                 android:textSize="17sp"
                 style="@style/Widget.FomoKiller.ModeButton" />
 
@@ -97,7 +97,7 @@
                 android:id="@+id/labelKillAll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Appui long pour choisir les apps"
+                android:text="@string/label_kill_all_default"
                 android:textSize="12sp"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:paddingHorizontal="4dp"
@@ -108,7 +108,7 @@
                 android:id="@+id/btnVipOnly"
                 android:layout_width="match_parent"
                 android:layout_height="72dp"
-                android:text="Protégé"
+                android:text="@string/mode_vip_only"
                 android:textSize="17sp"
                 style="@style/Widget.FomoKiller.ModeButton" />
 
@@ -116,7 +116,7 @@
                 android:id="@+id/labelVipOnly"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Appui long pour ajouter des apps VIP"
+                android:text="@string/label_vip_only_default"
                 android:textSize="12sp"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:paddingHorizontal="4dp"

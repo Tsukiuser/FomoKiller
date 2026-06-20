@@ -85,6 +85,12 @@ class FomoNotificationService : NotificationListenerService() {
         if (pkg == packageName) return
 
         val shouldBlock = AppState.shouldBlockNotification(pkg)
+        
+        // Si c'est une notification qu'on vient de restaurer nous-même, on l'ignore
+        if (sbn.notification.extras.getBoolean("fomokiller_restored", false)) {
+            return
+        }
+
         Log.d(TAG, "onNotificationPosted: $pkg — bloquer: $shouldBlock — mode: ${AppState.currentMode}")
 
         if (shouldBlock) {
@@ -211,22 +217,26 @@ class FomoNotificationService : NotificationListenerService() {
 
             builder.setContentTitle(title)
                 .setContentText(text)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(held.notification.smallIcon) // On utilise l'icône originale au lieu de ic_launcher
                 .setLargeIcon(drawableToBitmap(appIcon)) // Icône de l'app d'origine
-                .setSubText(appLabel) // Affiche le nom de l'app source en haut
+                .setSubText(appLabel) 
                 .setContentIntent(held.notification.contentIntent)
                 .setDeleteIntent(held.notification.deleteIntent)
                 .setWhen(held.notification.`when`)
                 .setShowWhen(true)
                 .setAutoCancel(true)
-                .setGroup("fomo_group_${held.packageName}") // Grouper par app d'origine
+                .setGroup("fomo_group_${held.packageName}") 
 
             // Transfert des boutons d'actions (Répondre, Like, etc.)
             held.notification.actions?.forEach { action ->
                 builder.addAction(action)
             }
 
-            nm.notify(held.tag, held.id, builder.build())
+            // On s'assure que la notification restaurée n'est pas interceptée par FomoKiller à nouveau
+            val newNotification = builder.build()
+            newNotification.extras.putBoolean("fomokiller_restored", true)
+
+            nm.notify(held.tag, held.id, newNotification)
             Log.d(TAG, "Notification relâchée avec identité: ${held.packageName}")
         } catch (e: Exception) {
             Log.e(TAG, "Erreur lors du renvoi complet: ${e.message}")
@@ -244,7 +254,7 @@ class FomoNotificationService : NotificationListenerService() {
                 Notification.Builder(this)
             }
             builder.setContentTitle(held.packageName)
-                .setContentText("Notification restaurée")
+                .setContentText(getString(R.string.msg_restored))
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setAutoCancel(true)
             nm.notify(held.tag, held.id, builder.build())

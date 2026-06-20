@@ -46,7 +46,7 @@ object AppState {
         set(value) = prefs.edit().putInt(KEY_OPEN_COUNT, value).apply()
 
     var reDisplayNotifications: Boolean
-        get() = prefs.getBoolean(KEY_REDISPLAY, true)
+        get() = prefs.getBoolean(KEY_REDISPLAY, false)
         set(value) = prefs.edit().putBoolean(KEY_REDISPLAY, value).apply()
 
     var currentMode: FomoMode

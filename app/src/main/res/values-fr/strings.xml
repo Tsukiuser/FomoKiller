@@ -5,9 +5,49 @@
     <string name="mode_kill_all">Activé</string>
     <string name="mode_vip_only">Protégé</string>
 
+    <string name="label_off">Toutes les notifications passent</string>
+    <string name="label_kill_all_default">Appui long pour choisir les apps à bloquer</string>
+    <string name="label_vip_only_default">Appui long pour choisir les apps VIP</string>
+
+    <string name="permission_banner_title">Accès aux notifications requis</string>
+    <string name="permission_banner_desc">Appuyez sur un bouton pour ouvrir les paramètres</string>
+
+    <string name="label_blocked_count_single">1 app bloquée</string>
+    <string name="label_blocked_count_plural">%d apps bloquées</string>
+    <string name="label_vip_count_single">Tout bloqué sauf 1 VIP + système</string>
+    <string name="label_vip_count_plural">Tout bloqué sauf %d VIPs + système</string>
+
     <!-- Settings -->
     <string name="settings_tile_mode_title">Mode du raccourci</string>
     <string name="settings_tile_mode_desc">Le mode qui sera activé via la tuile de notification</string>
+    <string name="settings_restore_title">Restaurer les notifications</string>
+    <string name="settings_restore_desc">Ré-afficher les alertes bloquées en fin de session</string>
+
+    <!-- App Picker -->
+    <string name="picker_title_blocked">Apps à bloquer</string>
+    <string name="picker_title_vip">Apps VIP</string>
+    <string name="picker_subtitle_blocked">Bloquées en mode Activé</string>
+    <string name="picker_subtitle_vip">Autorisées en mode Protégé</string>
+    <string name="picker_btn_cancel">Annuler</string>
+    <string name="picker_btn_confirm">Confirmer</string>
+    <string name="picker_btn_confirm_count">Confirmer (%d)</string>
+
+    <!-- Toasts / Messages -->
+    <string name="toast_permission_denied">Permission refusée : les notifications ne pourront pas être restaurées</string>
+    <string name="toast_initializing">Initialisation du service&#8230;</string>
+    <string name="toast_request_access">Autorisez l\'accès aux notifications</string>
+    <string name="msg_restored">Notification restaurée</string>
+    <string name="error_msg">Erreur: %s</string>
+
+    <!-- Restricted Settings / Sensitive Permissions -->
+    <string name="restricted_settings_title">Paramètres restreints 🔒</string>
+    <string name="restricted_settings_desc">Sur certains appareils (Android 13+), vous devez autoriser les \"Paramètres restreints\" pour activer l\'accès aux notifications.\n\n1. Ouvrez les <b>Infos de l\'application</b> FomoKiller\n2. Appuyez sur les <b>trois points (⋮)</b> en haut à droite\n3. Sélectionnez <b>\"Autoriser les paramètres restreints\"</b>\n4. Revenez ici pour activer le service.</string>
+    <string name="restricted_settings_open">Infos de l\'app</string>
+    <string name="restricted_settings_ignore">Plus tard</string>
+    <string name="battery_tip_title">Optimisation batterie 🔋</string>
+    <string name="battery_tip_desc">Pour garantir que FomoKiller intercepte et restaure vos notifications sans délai, nous vous conseillons de désactiver les restrictions en arrière-plan.\n\nL\'application est extrêmement légère (0% d\'utilisation batterie constatée) et ne ralentira pas votre téléphone.</string>
+    <string name="battery_tip_open">Accorder l\'autorisation</string>
+    <string name="battery_tip_ignore">Plus tard</string>
 
     <!-- Quick Settings Tile -->
     <string name="tile_label">FomoKiller</string>

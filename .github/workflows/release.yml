@@ -51,6 +51,10 @@ jobs:
         if: steps.check_trigger.outputs.should_release == 'true'
         run: gradle assembleDebug
 
+      - name: Rename APK
+        if: steps.check_trigger.outputs.should_release == 'true'
+        run: mv app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/fomokiller.apk
+
       - name: Get Version
         if: steps.check_trigger.outputs.should_release == 'true'
         id: get_version
@@ -65,6 +69,6 @@ jobs:
           name: Release ${{ steps.get_version.outputs.version }}
           draft: false
           prerelease: false
-          files: app/build/outputs/apk/debug/app-debug.apk
+          files: app/build/outputs/apk/debug/fomokiller.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

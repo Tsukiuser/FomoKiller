@@ -17,34 +17,35 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/battery_tip_title"
+        android:text="@string/restricted_settings_title"
         android:textColor="?attr/colorOnSurface"
         android:textSize="20sp"
         android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/restrictedSettingsDesc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:lineSpacingExtra="4dp"
-        android:text="@string/battery_tip_desc"
+        android:text="@string/restricted_settings_desc"
         android:textColor="?attr/colorOnSurfaceVariant"
         android:textSize="14sp" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnOpenBatterySettings"
+        android:id="@+id/btnOpenAppInfo"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_marginTop="24dp"
-        android:text="@string/battery_tip_open"
+        android:text="@string/restricted_settings_open"
         app:cornerRadius="12dp" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnIgnoreBattery"
+        android:id="@+id/btnIgnoreRestricted"
         style="@style/Widget.Material3.Button.TextButton"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_marginTop="8dp"
-        android:text="@string/battery_tip_ignore" />
+        android:text="@string/restricted_settings_ignore" />
 
 </LinearLayout>
