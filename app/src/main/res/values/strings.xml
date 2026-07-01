@@ -50,6 +50,13 @@
     <string name="battery_tip_open">Grant permission</string>
     <string name="battery_tip_ignore">Later</string>
 
+    <!-- Keywords Panel -->
+    <string name="settings_keywords_title">Smart Filtering</string>
+    <string name="settings_keywords_desc">Allow or block notifications based on their content</string>
+    <string name="keyword_action_allow">Allow if contains</string>
+    <string name="keyword_action_block">Block if contains</string>
+    <string name="keyword_input_hint">Add a keyword (e.g. \"Urgent\")</string>
+
     <!-- Quick Settings Tile -->
     <string name="tile_label">FomoKiller</string>
     <string name="tile_subtitle_active">Mode: %s</string>

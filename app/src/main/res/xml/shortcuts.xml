@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="mode_off"
+        android:enabled="true"
+        android:icon="@drawable/ic_tile_fomo"
+        android:shortcutShortLabel="@string/mode_off"
+        android:shortcutLongLabel="@string/mode_off">
+        <intent
+            android:action="com.fomokiller.ACTION_SET_MODE"
+            android:targetPackage="com.fomokiller"
+            android:targetClass="com.fomokiller.FomoActionReceiver">
+            <extra android:name="mode" android:value="OFF" />
+        </intent>
+        <capability-binding android:capability="actions.intent.TBD" />
+    </shortcut>
+    <shortcut
+        android:shortcutId="mode_kill_all"
+        android:enabled="true"
+        android:icon="@drawable/ic_tile_fomo"
+        android:shortcutShortLabel="@string/mode_kill_all"
+        android:shortcutLongLabel="@string/mode_kill_all">
+        <intent
+            android:action="com.fomokiller.ACTION_SET_MODE"
+            android:targetPackage="com.fomokiller"
+            android:targetClass="com.fomokiller.FomoActionReceiver">
+            <extra android:name="mode" android:value="KILL_ALL" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:shortcutId="mode_vip_only"
+        android:enabled="true"
+        android:icon="@drawable/ic_tile_fomo"
+        android:shortcutShortLabel="@string/mode_vip_only"
+        android:shortcutLongLabel="@string/mode_vip_only">
+        <intent
+            android:action="com.fomokiller.ACTION_SET_MODE"
+            android:targetPackage="com.fomokiller"
+            android:targetClass="com.fomokiller.FomoActionReceiver">
+            <extra android:name="mode" android:value="VIP_ONLY" />
+        </intent>
+    </shortcut>
+</shortcuts>

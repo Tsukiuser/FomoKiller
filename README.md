@@ -4,24 +4,31 @@
 
 ---
 
-## ✨ Features
+## 😎 Features
 
-- **🛡️ 100% Local & Private**: No server, no data collection. Your notifications stay on your phone.
-- **🚀 No frills**: A minimalist interface for maximum efficiency.
-- **⚙️ Three focus modes**:
-  - **Disabled**: Normal life. All notifications go through.
-  - **Enabled (Selective)**: Block only the culprits (social media, games, etc.). Everything else goes through.
-  - **Protected (VIP)**: The ultimate focus mode. Everything is blocked, except your VIP apps (family, work, emergencies) and system calls.
+- **🛡️ 100% Local & Private** : No server, no data collection. Your notifications stay on your phone.
+- **🚀 No frills** : A minimalist interface for maximum efficiency.
+- **⚙️ Three focus modes** :
+  - **Disabled** : Normal life. All notifications go through.
+  - **Enabled (Selective)** : Block only the culprits (social media, games, etc.). Everything else goes through.
+  - **Protected (VIP)** : The ultimate focus mode. Everything is blocked, except your VIP apps (family, work, emergencies) and system calls.
+- **🔍 Smart Filtering** : Precise control by allowing or blocking notifications based on specific keywords.
 
 ---
 
+## ✨ What's new
+
+- **Better system integration** : Full integration with the Android system, including Quick Settings tiles and App Shortcuts.
+- **Enhanced automation** : The app is now compatible with Voice Assistants (Gemini, Bixby) and automation apps (Samsung Routines, Tasker, Google Assistant).
+- **Smart Filtering** : A new advanced filtering option allows you to allow or block notifications precisely using keywords.
+
 ## 🛠️ Tech Stack
 
-- **Language**: Kotlin
-- **Architecture**: Singleton pattern for global state (`AppState`) and bound Service.
-- **UI**: Material Design 3, ViewBinding, BottomSheet for app selection.
-- **Core**: `NotificationListenerService` for surgical notification interception.
-- **Storage**: `SharedPreferences` for ultra-lightweight persistence.
+- **Language** : Kotlin
+- **Architecture** : Singleton pattern for global state (`AppState`) and bound Service.
+- **UI** : Material Design 3, ViewBinding, BottomSheet for app selection.
+- **Core** : `NotificationListenerService` for surgical notification interception.
+- **Storage** : `SharedPreferences` for ultra-lightweight persistence.
 
 ---
 
@@ -66,9 +73,9 @@ You can install FomoKiller in two ways:
 ## 🔒 Privacy
 
 Privacy isn't an option, it's the foundation:
-- **Zero internet access**: The app doesn't even have the `INTERNET` permission.
-- **Zero Cloud**: No data ever leaves your device.
-- **Open Source**: The code is transparent and auditable by everyone.
+- **Zero internet access** : The app doesn't even have the `INTERNET` permission.
+- **Zero Cloud** : No data ever leaves your device.
+- **Open Source** : The code is transparent and auditable by everyone.
 
 ---
 

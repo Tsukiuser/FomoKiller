@@ -32,7 +32,19 @@
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
             </intent-filter>
+
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
+
+        <receiver
+            android:name=".FomoActionReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.fomokiller.ACTION_SET_MODE" />
+            </intent-filter>
+        </receiver>
 
         <!-- Notification Listener Service -->
         <service
@@ -58,7 +70,7 @@
         <service
             android:name=".FomoTileService"
             android:exported="true"
-            android:icon="@drawable/ic_launcher_foreground"
+            android:icon="@drawable/ic_tile_fomo"
             android:label="@string/tile_label"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>

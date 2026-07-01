@@ -138,4 +138,7 @@
     <!-- Inclusion du panneau de paramètres (BottomSheet persistante) -->
     <include layout="@layout/bottom_sheet_settings" />
 
+    <!-- Panneau de mots-clés (Inversé, s'ouvre du haut vers le bas) -->
+    <include layout="@layout/panel_keywords" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

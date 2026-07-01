@@ -26,6 +26,10 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.button.MaterialButtonToggleGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -40,7 +44,11 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var settingsBehavior: BottomSheetBehavior<View>
+    private lateinit var keywordsBehavior: BottomSheetBehavior<View>
     private lateinit var gestureDetector: GestureDetector
+
+    private var currentConfigMode = FomoMode.KILL_ALL
+    private var isBlockAction = false
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -65,6 +73,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         
         setupSettingsPanel()
+        setupKeywordsPanel()
         setupGestureDetector()
         
         AppState.openCount++
@@ -81,14 +90,82 @@ class MainActivity : AppCompatActivity() {
             override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
                 if (e1 != null && e2 != null) {
                     val diffY = e2.y - e1.y
-                    if (diffY < -100 && Math.abs(velocityY) > 100) { // Swipe UP
+                    // Swipe UP -> Settings (Bottom to Up)
+                    if (diffY < -100 && Math.abs(velocityY) > 100) {
                         settingsBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                        return true
+                    }
+                    // Swipe DOWN -> Keywords (Top to Down)
+                    if (diffY > 100 && Math.abs(velocityY) > 100) {
+                        keywordsBehavior.state = BottomSheetBehavior.STATE_EXPANDED
                         return true
                     }
                 }
                 return false
             }
         })
+    }
+
+    private fun setupKeywordsPanel() {
+        val keywordsPanel = findViewById<View>(R.id.keywordsPanel)
+        keywordsBehavior = BottomSheetBehavior.from(keywordsPanel)
+        
+        // Inversion : La poignée est en bas, le panneau glisse du haut vers le bas.
+        // On simule cela en cachant le panneau en haut par défaut.
+        keywordsBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+
+        val toggleMode = findViewById<MaterialButtonToggleGroup>(R.id.toggleGroupKeywordMode)
+        val toggleAction = findViewById<MaterialButtonToggleGroup>(R.id.toggleGroupKeywordAction)
+        val editKeyword = findViewById<TextInputEditText>(R.id.editKeyword)
+        val chipGroup = findViewById<ChipGroup>(R.id.keywordChipGroup)
+        val inputLayout = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.inputKeywordLayout)
+
+        fun refreshChips() {
+            chipGroup.removeAllViews()
+            val keywords = AppState.getKeywords(currentConfigMode, isBlockAction)
+            keywords.forEach { word ->
+                val chip = Chip(this).apply {
+                    text = word
+                    isCloseIconVisible = true
+                    setOnCloseIconClickListener {
+                        val updated = AppState.getKeywords(currentConfigMode, isBlockAction).toMutableSet()
+                        updated.remove(word)
+                        AppState.setKeywords(currentConfigMode, isBlockAction, updated)
+                        refreshChips()
+                        FomoNotificationService.instance?.applyCurrentMode()
+                    }
+                }
+                chipGroup.addView(chip)
+            }
+        }
+
+        toggleMode.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (isChecked) {
+                currentConfigMode = if (checkedId == R.id.btnConfigKillAll) FomoMode.KILL_ALL else FomoMode.VIP_ONLY
+                refreshChips()
+            }
+        }
+
+        toggleAction.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (isChecked) {
+                isBlockAction = checkedId == R.id.btnActionBlock
+                refreshChips()
+            }
+        }
+
+        inputLayout.setEndIconOnClickListener {
+            val word = editKeyword.text?.toString()?.trim()
+            if (!word.isNullOrEmpty()) {
+                val updated = AppState.getKeywords(currentConfigMode, isBlockAction).toMutableSet()
+                updated.add(word)
+                AppState.setKeywords(currentConfigMode, isBlockAction, updated)
+                editKeyword.setText("")
+                refreshChips()
+                FomoNotificationService.instance?.applyCurrentMode()
+            }
+        }
+
+        refreshChips()
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {

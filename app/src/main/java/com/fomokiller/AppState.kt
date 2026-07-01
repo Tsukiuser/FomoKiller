@@ -16,6 +16,17 @@ object AppState {
     private const val KEY_VIP_APPS = "vip_apps"
     private const val KEY_OPEN_COUNT = "open_count"
     private const val KEY_REDISPLAY = "redisplay_notifications"
+    private const val KEY_KEYWORDS_PREFIX = "keywords_"
+
+    fun getKeywords(mode: FomoMode, isBlockList: Boolean): Set<String> {
+        val key = "${KEY_KEYWORDS_PREFIX}${mode.name}_${if (isBlockList) "block" else "allow"}"
+        return prefs.getStringSet(key, emptySet()) ?: emptySet()
+    }
+
+    fun setKeywords(mode: FomoMode, isBlockList: Boolean, keywords: Set<String>) {
+        val key = "${KEY_KEYWORDS_PREFIX}${mode.name}_${if (isBlockList) "block" else "allow"}"
+        prefs.edit().putStringSet(key, keywords).apply()
+    }
 
     val ALWAYS_ALLOWED_PACKAGES = setOf(
         "com.android.phone",
@@ -61,9 +72,23 @@ object AppState {
         get() = prefs.getStringSet(KEY_VIP_APPS, emptySet()) ?: emptySet()
         set(value) = prefs.edit().putStringSet(KEY_VIP_APPS, value).apply()
 
-    fun shouldBlockNotification(packageName: String): Boolean {
+    fun shouldBlockNotification(packageName: String, title: String?, text: String?): Boolean {
         if (ALWAYS_ALLOWED_PACKAGES.contains(packageName)) return false
         
+        val content = "${title ?: ""} ${text ?: ""}".lowercase()
+        val currentModeKeywordsAllow = getKeywords(currentMode, false)
+        val currentModeKeywordsBlock = getKeywords(currentMode, true)
+
+        // Si le contenu contient un mot "autorisé", on ne bloque jamais
+        if (currentModeKeywordsAllow.any { it.isNotEmpty() && content.contains(it.lowercase()) }) {
+            return false
+        }
+        
+        // Si le contenu contient un mot "interdit", on bloque toujours
+        if (currentModeKeywordsBlock.any { it.isNotEmpty() && content.contains(it.lowercase()) }) {
+            return true
+        }
+
         return when (currentMode) {
             FomoMode.OFF -> false
             FomoMode.KILL_ALL -> {

@@ -49,6 +49,13 @@
     <string name="battery_tip_open">Accorder l\'autorisation</string>
     <string name="battery_tip_ignore">Plus tard</string>
 
+    <!-- Keywords Panel -->
+    <string name="settings_keywords_title">Filtrage Intelligent</string>
+    <string name="settings_keywords_desc">Autoriser ou bloquer selon le contenu</string>
+    <string name="keyword_action_allow">Autoriser si contient</string>
+    <string name="keyword_action_block">Bloquer si contient</string>
+    <string name="keyword_input_hint">Ajouter un mot (ex: \"Urgent\")</string>
+
     <!-- Quick Settings Tile -->
     <string name="tile_label">FomoKiller</string>
     <string name="tile_subtitle_active">Mode : %s</string>

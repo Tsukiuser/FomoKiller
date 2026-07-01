@@ -80,7 +80,11 @@ class FomoNotificationService : NotificationListenerService() {
         val pkg = sbn.packageName ?: return
         if (pkg == packageName) return
 
-        val shouldBlock = AppState.shouldBlockNotification(pkg)
+        val extras = sbn.notification.extras
+        val title = extras?.getCharSequence(Notification.EXTRA_TITLE)?.toString()
+        val text = extras?.getCharSequence(Notification.EXTRA_TEXT)?.toString()
+
+        val shouldBlock = AppState.shouldBlockNotification(pkg, title, text)
         
         // Si c'est une notification qu'on vient de restaurer nous-même, on l'ignore
         if (sbn.notification.extras.getBoolean("fomokiller_restored", false)) {
@@ -124,7 +128,11 @@ class FomoNotificationService : NotificationListenerService() {
                         // Si déjà en mémoire, on ne traite pas à nouveau
                         if (heldNotifications.containsKey(sbn.key)) continue
 
-                        if (AppState.shouldBlockNotification(pkg)) {
+                        val extras = sbn.notification.extras
+                        val title = extras?.getCharSequence(Notification.EXTRA_TITLE)?.toString()
+                        val text = extras?.getCharSequence(Notification.EXTRA_TEXT)?.toString()
+
+                        if (AppState.shouldBlockNotification(pkg, title, text)) {
                             Log.d(TAG, "Interception notif: $pkg")
                             holdAndCancel(sbn)
                         }
@@ -171,7 +179,13 @@ class FomoNotificationService : NotificationListenerService() {
     }
 
     private fun releaseNowAllowed() {
-        val keysToRemove = heldNotifications.filter { !AppState.shouldBlockNotification(it.value.packageName) }.keys
+        val keysToRemove = heldNotifications.filter { entry ->
+            val held = entry.value
+            val extras = held.notification.extras
+            val title = extras?.getCharSequence(Notification.EXTRA_TITLE)?.toString()
+            val text = extras?.getCharSequence(Notification.EXTRA_TEXT)?.toString()
+            !AppState.shouldBlockNotification(held.packageName, title, text) 
+        }.keys
         if (keysToRemove.isEmpty()) return
         
         Log.d(TAG, "Relâchement partiel: ${keysToRemove.size} notifications")
