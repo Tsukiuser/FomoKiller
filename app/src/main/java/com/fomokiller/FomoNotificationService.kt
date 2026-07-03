@@ -102,7 +102,12 @@ class FomoNotificationService : NotificationListenerService() {
 
     override fun onNotificationRemoved(sbn: StatusBarNotification?) {
         sbn ?: return
-        if (!AppState.shouldBlockNotification(sbn.packageName ?: return)) {
+        val pkg = sbn.packageName ?: return
+        val extras = sbn.notification.extras
+        val title = extras?.getCharSequence(Notification.EXTRA_TITLE)?.toString()
+        val text = extras?.getCharSequence(Notification.EXTRA_TEXT)?.toString()
+
+        if (!AppState.shouldBlockNotification(pkg, title, text)) {
             heldNotifications.remove(sbn.key)
         }
     }

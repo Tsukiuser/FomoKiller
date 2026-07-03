@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var settingsBehavior: BottomSheetBehavior<View>
-    private lateinit var keywordsBehavior: BottomSheetBehavior<View>
+    private var isKeywordsOpen = false
     private lateinit var gestureDetector: GestureDetector
 
     private var currentConfigMode = FomoMode.KILL_ALL
@@ -88,7 +88,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupGestureDetector() {
         gestureDetector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
             override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
-                if (e1 != null && e2 != null) {
+                if (e1 != null) {
                     val diffY = e2.y - e1.y
                     // Swipe UP -> Settings (Bottom to Up)
                     if (diffY < -100 && Math.abs(velocityY) > 100) {
@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     // Swipe DOWN -> Keywords (Top to Down)
                     if (diffY > 100 && Math.abs(velocityY) > 100) {
-                        keywordsBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                        toggleKeywords(true)
                         return true
                     }
                 }
@@ -106,13 +106,53 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    private fun toggleKeywords(open: Boolean) {
+        val panel = findViewById<View>(R.id.keywordsPanel)
+        val scrim = findViewById<View>(R.id.settingsScrim)
+        
+        if (isKeywordsOpen == open) return
+        isKeywordsOpen = open
+
+        val targetY = if (open) 0f else -panel.height.toFloat()
+        
+        panel.animate()
+            .translationY(targetY)
+            .setDuration(300)
+            .withStartAction {
+                if (open) {
+                    scrim.visibility = View.VISIBLE
+                    panel.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
+                }
+            }
+            .withEndAction {
+                if (!open && settingsBehavior.state == BottomSheetBehavior.STATE_HIDDEN) {
+                    scrim.visibility = View.GONE
+                }
+            }
+            .start()
+
+        scrim.animate()
+            .alpha(if (open) 0.6f else 0f)
+            .setDuration(300)
+            .start()
+    }
+
     private fun setupKeywordsPanel() {
         val keywordsPanel = findViewById<View>(R.id.keywordsPanel)
-        keywordsBehavior = BottomSheetBehavior.from(keywordsPanel)
         
-        // Inversion : La poignée est en bas, le panneau glisse du haut vers le bas.
-        // On simule cela en cachant le panneau en haut par défaut.
-        keywordsBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        // Initial state: Hidden above screen
+        keywordsPanel.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
+            override fun onLayoutChange(v: View, l: Int, t: Int, r: Int, b: Int, ol: Int, ot: Int, or: Int, ob: Int) {
+                if (!isKeywordsOpen) {
+                    keywordsPanel.translationY = -keywordsPanel.height.toFloat()
+                }
+                keywordsPanel.removeOnLayoutChangeListener(this)
+            }
+        })
+
+        findViewById<View>(R.id.keywordsHandle).setOnClickListener {
+            toggleKeywords(false)
+        }
 
         val toggleMode = findViewById<MaterialButtonToggleGroup>(R.id.toggleGroupKeywordMode)
         val toggleAction = findViewById<MaterialButtonToggleGroup>(R.id.toggleGroupKeywordAction)
@@ -170,8 +210,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         // Le geste ne fonctionne que si aucune autre modale n'est ouverte
-        // (BottomSheetDialog n'expose pas facilement son état, mais on peut vérifier si settings est caché)
-        if (settingsBehavior.state == BottomSheetBehavior.STATE_HIDDEN || settingsBehavior.state == BottomSheetBehavior.STATE_SETTLING) {
+        val isSettingsHidden = settingsBehavior.state == BottomSheetBehavior.STATE_HIDDEN || settingsBehavior.state == BottomSheetBehavior.STATE_SETTLING
+        
+        if (isSettingsHidden && !isKeywordsOpen) {
             gestureDetector.onTouchEvent(ev)
         }
         return super.dispatchTouchEvent(ev)
@@ -203,6 +244,7 @@ class MainActivity : AppCompatActivity() {
 
         scrim.setOnClickListener {
             settingsBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            toggleKeywords(false)
         }
 
         val switchRedisplay = findViewById<MaterialSwitch>(R.id.switchRedisplay)
@@ -319,11 +361,9 @@ class MainActivity : AppCompatActivity() {
     private fun checkRestrictedSettingsIfNeeded() {
         // Cette aide n'est pertinente que sur Android 13+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val appOps = getSystemService(Context.APP_OPS_SERVICE) as android.app.AppOpsManager
             try {
-                // Check for OPSTR_BIND_NOTIFICATION_LISTENER_SERVICE equivalent
-                // Or simply show the tip if the user just tried to enable it but failed.
-                // We'll use a simple logic: if they are on Android 13+ and returning without permission.
+                // Si l'utilisateur est sur Android 13+ et qu'on revient ici sans la permission,
+                // il y a de fortes chances qu'il soit bloqué par les "Paramètres restreints".
                 showRestrictedSettingsTip()
             } catch (e: Exception) {}
         }

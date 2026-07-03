@@ -72,7 +72,7 @@ object AppState {
         get() = prefs.getStringSet(KEY_VIP_APPS, emptySet()) ?: emptySet()
         set(value) = prefs.edit().putStringSet(KEY_VIP_APPS, value).apply()
 
-    fun shouldBlockNotification(packageName: String, title: String?, text: String?): Boolean {
+    fun shouldBlockNotification(packageName: String, title: String? = null, text: String? = null): Boolean {
         if (ALWAYS_ALLOWED_PACKAGES.contains(packageName)) return false
         
         val content = "${title ?: ""} ${text ?: ""}".lowercase()
