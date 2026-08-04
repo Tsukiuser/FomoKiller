@@ -108,28 +108,41 @@ class MainActivity : AppCompatActivity() {
 
     private fun toggleKeywords(open: Boolean) {
         val panel = findViewById<View>(R.id.keywordsPanel)
+        val container = findViewById<View>(R.id.keywordsPanelContainer)
         val scrim = findViewById<View>(R.id.settingsScrim)
         
         if (isKeywordsOpen == open) return
         isKeywordsOpen = open
 
-        val targetY = if (open) 0f else -panel.height.toFloat()
+        // Limit height to 70% of screen to ensure scroll works and handle stays accessible
+        val maxHeight = (resources.displayMetrics.heightPixels * 0.7f).toInt()
         
-        panel.animate()
-            .translationY(targetY)
-            .setDuration(300)
-            .withStartAction {
-                if (open) {
-                    scrim.visibility = View.VISIBLE
-                    panel.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
-                }
+        // Use post to ensure height is calculated if it was 0
+        panel.post {
+            if (panel.height > maxHeight) {
+                val params = panel.layoutParams
+                params.height = maxHeight
+                panel.layoutParams = params
             }
-            .withEndAction {
-                if (!open && settingsBehavior.state == BottomSheetBehavior.STATE_HIDDEN) {
-                    scrim.visibility = View.GONE
+
+            val targetY = if (open) 0f else -panel.height.toFloat()
+            
+            panel.animate()
+                .translationY(targetY)
+                .setDuration(300)
+                .withStartAction {
+                    if (open) {
+                        scrim.visibility = View.VISIBLE
+                        panel.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
+                    }
                 }
-            }
-            .start()
+                .withEndAction {
+                    if (!open && settingsBehavior.state == BottomSheetBehavior.STATE_HIDDEN) {
+                        scrim.visibility = View.GONE
+                    }
+                }
+                .start()
+        }
 
         scrim.animate()
             .alpha(if (open) 0.6f else 0f)
@@ -150,8 +163,9 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        findViewById<View>(R.id.keywordsHandle).setOnClickListener {
-            toggleKeywords(false)
+        findViewById<View>(R.id.keywordsHandle).apply {
+            findViewById<View>(R.id.handleIndicator).alpha = 0.8f
+            setOnClickListener { toggleKeywords(false) }
         }
 
         val toggleMode = findViewById<MaterialButtonToggleGroup>(R.id.toggleGroupKeywordMode)
@@ -277,6 +291,29 @@ class MainActivity : AppCompatActivity() {
         }
 
         loadAboutMarkdown()
+        setupSupportLink()
+    }
+
+    private fun setupSupportLink() {
+        val textAbout = findViewById<TextView>(R.id.textAbout)
+        
+        // Si l'app ne vient PAS du Play Store (donc GitHub ou Debug), on affiche le lien de soutien
+        if (BuildConfig.INSTALL_SOURCE != "PLAY_STORE") {
+            val supportText = if (java.util.Locale.getDefault().language == "fr") {
+                "<br/><br/><a href=\"https://play.google.com/store/apps/details?id=com.fomokiller\">Soutenir le projet sur le Play Store ❤️</a>"
+            } else {
+                "<br/><br/><a href=\"https://play.google.com/store/apps/details?id=com.fomokiller\">Support the project on Play Store ❤️</a>"
+            }
+            
+            val currentText = textAbout.text
+            textAbout.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                Html.fromHtml(currentText.toString().replace("\n", "<br/>") + supportText, Html.FROM_HTML_MODE_COMPACT)
+            } else {
+                @Suppress("DEPRECATION")
+                Html.fromHtml(currentText.toString().replace("\n", "<br/>") + supportText)
+            }
+            textAbout.movementMethod = LinkMovementMethod.getInstance()
+        }
     }
 
     private fun loadAboutMarkdown() {

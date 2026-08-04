@@ -19,6 +19,15 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "INSTALL_SOURCE", "\"PLAY_STORE\""
+        }
+        debug {
+            buildConfigField "String", "INSTALL_SOURCE", "\"DEBUG\""
+        }
+        create("github") {
+            initWith(getByName("debug"))
+            buildConfigField "String", "INSTALL_SOURCE", "\"GITHUB\""
+            matchingFallbacks.add("debug")
         }
     }
 
@@ -33,6 +42,7 @@ android {
 
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
 }
 

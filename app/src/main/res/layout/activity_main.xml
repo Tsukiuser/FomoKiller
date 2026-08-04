@@ -140,6 +140,7 @@
 
     <!-- Panneau de mots-clés (Inversé, s'ouvre du haut vers le bas) -->
     <FrameLayout
+        android:id="@+id/keywordsPanelContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top">

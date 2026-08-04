@@ -12,21 +12,10 @@
     app:behavior_peekHeight="0dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-    <!-- Header cliquable (optionnel si geste plein écran) -->
-    <LinearLayout
-        android:id="@+id/settingsHeader"
-        android:layout_width="match_parent"
-        android:layout_height="32dp"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <View
-            android:layout_width="32dp"
-            android:layout_height="4dp"
-            android:layout_marginTop="12dp"
-            android:background="#40808080"
-            android:backgroundTint="?attr/colorOnSurfaceVariant" />
-    </LinearLayout>
+    <!-- Universal Handle -->
+    <include
+        layout="@layout/view_panel_handle"
+        android:id="@+id/settingsHandle" />
 
     <View
         android:layout_width="match_parent"
