@@ -36,6 +36,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.fomokiller.databinding.ActivityMainBinding
+import android.util.TypedValue
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.materialswitch.MaterialSwitch
@@ -88,11 +89,20 @@ class MainActivity : AppCompatActivity() {
     private fun setupGestureDetector() {
         gestureDetector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
             override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+                // Désactiver les gestes en paysage car tout est visible
+                if (resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE) {
+                    return false
+                }
+
                 if (e1 != null) {
                     val diffY = e2.y - e1.y
-                    // Swipe UP -> Settings (Bottom to Up)
+                    // Swipe UP -> Close keywords if open, or open Settings
                     if (diffY < -100 && Math.abs(velocityY) > 100) {
-                        settingsBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                        if (isKeywordsOpen) {
+                            toggleKeywords(false)
+                        } else if (::settingsBehavior.isInitialized) {
+                            settingsBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                        }
                         return true
                     }
                     // Swipe DOWN -> Keywords (Top to Down)
@@ -107,9 +117,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun toggleKeywords(open: Boolean) {
-        val panel = findViewById<View>(R.id.keywordsPanel)
+        val panel = findViewById<View>(R.id.keywordsPanel) ?: return
         val container = findViewById<View>(R.id.keywordsPanelContainer)
-        val scrim = findViewById<View>(R.id.settingsScrim)
+        val scrim = findViewById<View>(R.id.settingsScrim) ?: return
         
         if (isKeywordsOpen == open) return
         isKeywordsOpen = open
@@ -125,6 +135,11 @@ class MainActivity : AppCompatActivity() {
                 panel.layoutParams = params
             }
 
+            // Gérer l'élévation pour éviter l'ombre quand c'est fermé
+            if (open) {
+                panel.elevation = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16f, resources.displayMetrics)
+            }
+
             val targetY = if (open) 0f else -panel.height.toFloat()
             
             panel.animate()
@@ -137,8 +152,11 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 .withEndAction {
-                    if (!open && settingsBehavior.state == BottomSheetBehavior.STATE_HIDDEN) {
-                        scrim.visibility = View.GONE
+                    if (!open) {
+                        panel.elevation = 0f
+                        if (settingsBehavior.state == BottomSheetBehavior.STATE_HIDDEN) {
+                            scrim.visibility = View.GONE
+                        }
                     }
                 }
                 .start()
@@ -151,19 +169,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupKeywordsPanel() {
-        val keywordsPanel = findViewById<View>(R.id.keywordsPanel)
+        val keywordsPanel = findViewById<View>(R.id.keywordsPanel) ?: return
         
-        // Initial state: Hidden above screen
-        keywordsPanel.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
-            override fun onLayoutChange(v: View, l: Int, t: Int, r: Int, b: Int, ol: Int, ot: Int, or: Int, ob: Int) {
-                if (!isKeywordsOpen) {
-                    keywordsPanel.translationY = -keywordsPanel.height.toFloat()
+        // Initial state: Hidden above screen (Uniquement en portrait)
+        if (resources.configuration.orientation != android.content.res.Configuration.ORIENTATION_LANDSCAPE) {
+            keywordsPanel.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
+                override fun onLayoutChange(v: View, l: Int, t: Int, r: Int, b: Int, ol: Int, ot: Int, or: Int, ob: Int) {
+                    if (!isKeywordsOpen) {
+                        keywordsPanel.translationY = -keywordsPanel.height.toFloat()
+                    }
+                    keywordsPanel.removeOnLayoutChangeListener(this)
                 }
-                keywordsPanel.removeOnLayoutChangeListener(this)
-            }
-        })
+            })
+        }
 
-        findViewById<View>(R.id.keywordsHandle).apply {
+        findViewById<View>(R.id.keywordsHandle)?.apply {
             findViewById<View>(R.id.handleIndicator).alpha = 0.8f
             setOnClickListener { toggleKeywords(false) }
         }
@@ -224,7 +244,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         // Le geste ne fonctionne que si aucune autre modale n'est ouverte
-        val isSettingsHidden = settingsBehavior.state == BottomSheetBehavior.STATE_HIDDEN || settingsBehavior.state == BottomSheetBehavior.STATE_SETTLING
+        val isSettingsHidden = if (::settingsBehavior.isInitialized) {
+            settingsBehavior.state == BottomSheetBehavior.STATE_HIDDEN || settingsBehavior.state == BottomSheetBehavior.STATE_SETTLING
+        } else true
         
         if (isSettingsHidden && !isKeywordsOpen) {
             gestureDetector.onTouchEvent(ev)
@@ -233,8 +255,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupSettingsPanel() {
-        val bottomSheet = findViewById<View>(R.id.settingsBottomSheet)
-        val scrim = findViewById<View>(R.id.settingsScrim)
+        val bottomSheet = findViewById<View>(R.id.settingsBottomSheet) ?: return
+        val scrim = findViewById<View>(R.id.settingsScrim) ?: return
         settingsBehavior = BottomSheetBehavior.from(bottomSheet)
         settingsBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         
@@ -257,7 +279,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         scrim.setOnClickListener {
-            settingsBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            if (::settingsBehavior.isInitialized) settingsBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             toggleKeywords(false)
         }
 

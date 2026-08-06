@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface">
+
+    <LinearLayout
+        android:id="@+id/permissionBanner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/banner_bg"
+        android:paddingHorizontal="24dp"
+        android:paddingVertical="8dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/permission_banner_title"
+            android:textColor="@color/banner_text"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/appTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:textSize="13sp"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        android:letterSpacing="0.12"
+        android:textAllCaps="true"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/permissionBanner"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        android:paddingHorizontal="24dp"
+        android:paddingBottom="24dp"
+        app:layout_constraintTop_toBottomOf="@id/appTitle"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <!-- Colonne 1 : MODES (Vertical Chain) -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingEnd="12dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnOff"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:text="@string/mode_off"
+                style="@style/Widget.FomoKiller.ModeButton"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/btnKillAll"
+                app:layout_constraintVertical_chainStyle="spread" />
+
+            <TextView
+                android:id="@+id/labelOff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/label_off"
+                android:textSize="11sp"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:layout_marginTop="4dp"
+                app:layout_constraintTop_toBottomOf="@id/btnOff" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnKillAll"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:text="@string/mode_kill_all"
+                style="@style/Widget.FomoKiller.ModeButton"
+                app:layout_constraintTop_toBottomOf="@id/btnOff"
+                app:layout_constraintBottom_toTopOf="@id/btnVipOnly" />
+
+            <TextView
+                android:id="@+id/labelKillAll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/label_kill_all_default"
+                android:textSize="11sp"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:layout_marginTop="4dp"
+                app:layout_constraintTop_toBottomOf="@id/btnKillAll" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnVipOnly"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:text="@string/mode_vip_only"
+                style="@style/Widget.FomoKiller.ModeButton"
+                app:layout_constraintTop_toBottomOf="@id/btnKillAll"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <TextView
+                android:id="@+id/labelVipOnly"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/label_vip_only_default"
+                android:textSize="11sp"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:layout_marginTop="4dp"
+                app:layout_constraintTop_toBottomOf="@id/btnVipOnly" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Colonne 2 : SMART FILTERING -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.2"
+            android:layout_marginHorizontal="12dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="?attr/colorSurfaceVariant"
+            app:cardBackgroundColor="?attr/colorSurfaceVariant">
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true">
+                <include layout="@layout/content_keywords" />
+            </androidx.core.widget.NestedScrollView>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Colonne 3 : PARAMÈTRES -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.2"
+            android:layout_marginStart="12dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="?attr/colorSurfaceVariant"
+            app:cardBackgroundColor="?attr/colorSurfaceVariant">
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/content_settings" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                </LinearLayout>
+
+            </androidx.core.widget.NestedScrollView>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
+    <!-- Scrim & Sheets STUBS pour éviter les plantages ViewBinding -->
+    <View
+        android:id="@+id/settingsScrim"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
