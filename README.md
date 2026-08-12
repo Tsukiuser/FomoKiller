@@ -2,6 +2,8 @@
 
 **FomoKiller** is an open-source Android app designed to give you back control over your distractions. Tired of being interrupted by useless notifications while still being afraid of missing an important call? FomoKiller is here for that.
 
+Be **serious**: who hasn't wanted to turn on "Do Not Disturb" to **focus** or just forget about their phone? Yet, every time you do, stress makes you check it constantly—and the moment you put it down for a second, **you miss an important call or message.** FomoKiller solves this by **automatically filtering** your notifications. Don't miss what matters: it's **free,** open-source, and **ad-free.**
+
 ---
 
 ## 😎 Features
@@ -86,6 +88,8 @@ For optimal use and operation, I recommend disabling battery optimization. The a
 - **Tap "App info,"** or the "🛈" icon
 - Scroll down to **"Battery"**
 - Select **"Unrestricted"**
+
+To learn more, visit [this site](https://dontkillmyapp.com/)
 
 ---
 
