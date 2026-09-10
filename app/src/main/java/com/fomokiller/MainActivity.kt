@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -36,6 +37,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.fomokiller.databinding.ActivityMainBinding
+import com.fomokiller.BuildConfig
 import android.util.TypedValue
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -70,6 +72,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AppState.init(applicationContext)
+        updateOrientationLock()
+        
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
@@ -84,6 +88,16 @@ class MainActivity : AppCompatActivity() {
         
         setupButtons()
         updateUI()
+    }
+
+    private fun updateOrientationLock() {
+        val config = resources.configuration
+        val isLargeScreen = config.smallestScreenWidthDp >= 600
+        requestedOrientation = if (isLargeScreen) {
+            ActivityInfo.SCREEN_ORIENTATION_FULL_USER
+        } else {
+            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
     }
 
     private fun setupGestureDetector() {
