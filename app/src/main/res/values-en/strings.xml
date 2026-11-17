@@ -8,9 +8,15 @@
     <!-- Settings -->
     <string name="settings_tile_mode_title">Shortcut Mode</string>
     <string name="settings_tile_mode_desc">The mode that will be activated via the notification tile</string>
+    <string name="settings_auto_update_title">Automatic updates</string>
+    <string name="settings_auto_update_desc">Check and offer new versions over Wi-Fi</string>
 
     <!-- Quick Settings Tile -->
     <string name="tile_label">FomoKiller</string>
     <string name="tile_subtitle_active">Mode: %s</string>
     <string name="tile_subtitle_off">Disabled</string>
+
+    <string name="update_available_title">New version available</string>
+    <string name="update_downloading">Downloading update&#8230;</string>
+    <string name="update_error">Download failed</string>
 </resources>

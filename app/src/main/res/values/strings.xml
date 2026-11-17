@@ -23,6 +23,8 @@
     <string name="settings_tile_mode_desc">The mode that will be activated via the notification tile</string>
     <string name="settings_restore_title">Restore notifications</string>
     <string name="settings_restore_desc">Re-display blocked alerts at the end of the session</string>
+    <string name="settings_auto_update_title">Automatic updates</string>
+    <string name="settings_auto_update_desc">Check and offer new versions over Wi-Fi</string>
 
     <!-- App Picker -->
     <string name="picker_title_blocked">Apps to block</string>
@@ -61,4 +63,9 @@
     <string name="tile_label">FomoKiller</string>
     <string name="tile_subtitle_active">Mode: %s</string>
     <string name="tile_subtitle_off">Disabled</string>
+
+    <!-- Update & Messages -->
+    <string name="update_available_title">New version available</string>
+    <string name="update_downloading">Downloading update&#8230;</string>
+    <string name="update_error">Download failed</string>
 </resources>

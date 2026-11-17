@@ -4,7 +4,7 @@
     android:id="@+id/settingsBottomSheet"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/colorSurface"
+    android:background="@drawable/bg_custom_modal_top"
     android:orientation="vertical"
     android:clickable="true"
     android:focusable="true"
@@ -17,13 +17,19 @@
         layout="@layout/view_panel_handle"
         android:id="@+id/settingsHandle" />
 
-    <View
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?attr/colorSurfaceVariant"
-        android:alpha="0.2" />
+        android:layout_height="wrap_content">
 
-    <include layout="@layout/content_settings" />
+        <include layout="@layout/content_settings" />
+
+        <!-- Overlay fondu au scroll : fait disparaître doucement le contenu sous la poignée -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:layout_gravity="top"
+            android:background="@drawable/scrim_modal_fade_top" />
+    </FrameLayout>
 
     <View
         android:layout_width="match_parent"

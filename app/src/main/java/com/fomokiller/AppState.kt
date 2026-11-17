@@ -16,6 +16,7 @@ object AppState {
     private const val KEY_VIP_APPS = "vip_apps"
     private const val KEY_OPEN_COUNT = "open_count"
     private const val KEY_REDISPLAY = "redisplay_notifications"
+    private const val KEY_AUTO_UPDATE = "auto_update_enabled"
     private const val KEY_KEYWORDS_PREFIX = "keywords_"
 
     fun getKeywords(mode: FomoMode, isBlockList: Boolean): Set<String> {
@@ -59,6 +60,10 @@ object AppState {
     var reDisplayNotifications: Boolean
         get() = prefs.getBoolean(KEY_REDISPLAY, false)
         set(value) = prefs.edit().putBoolean(KEY_REDISPLAY, value).apply()
+
+    var autoUpdateEnabled: Boolean
+        get() = prefs.getBoolean(KEY_AUTO_UPDATE, false)
+        set(value) = prefs.edit().putBoolean(KEY_AUTO_UPDATE, value).apply()
 
     var currentMode: FomoMode
         get() = FomoMode.valueOf(prefs.getString(KEY_MODE, FomoMode.OFF.name) ?: FomoMode.OFF.name)

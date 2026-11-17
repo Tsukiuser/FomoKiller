@@ -75,7 +75,7 @@ You can install FomoKiller in two ways:
 ## 🔒 Privacy
 
 Privacy isn't an option, it's the foundation:
-- **Zero internet access** : The app doesn't even have the `INTERNET` permission.
+- **Restricted internet access** : The app only have the `INTERNET` permission to check updates and download the new apk.
 - **Zero Cloud** : No data ever leaves your device.
 - **Open Source** : The code is transparent and auditable by everyone.
 
@@ -97,7 +97,7 @@ To learn more, visit [this site](https://dontkillmyapp.com/)
 
 - Please note that the app **may behave differently** depending on your Android version, particularly versions **later than Android 10**
 - The app is still in **BETA**, by using it you accept that the app **may not function properly, or even crash**
-- Some antivirus software may send you notifications about this app: particularly Google Play Protect, **which still lets you install it safely regardless**
+- Some antivirus software may send you notifications about this app: particularly Google Play Protect, **which still lets you install it safely regardless**, if you still have doubt about the safety of this app, submit it in a virustotal.com test.
 - In the **BETA** version, the APK is **unsigned**, which may trigger a Google Play popup during installation: **Expand** the message, then **select "Install anyway"**
 
 ---

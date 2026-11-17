@@ -9,4 +9,10 @@
     <color name="surface_dark">#0A0A0A</color>
     <color name="on_surface_dark">#F5F5F5</color>
     <color name="on_surface_variant_dark">#A0A0A0</color>
+
+    <!-- Custom Modal Colors (Dark Theme) -->
+    <color name="modal_bg">#0A0A0A</color>
+    <color name="modal_stroke">#2B2B2B</color>
+    <color name="modal_handle">#2B2B2B</color>
+    <color name="message_tile_bg">#1C1C1C</color>
 </resources>

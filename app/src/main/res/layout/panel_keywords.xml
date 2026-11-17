@@ -1,25 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/keywordsPanel"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/colorSurface"
+    android:background="@drawable/bg_custom_modal_bottom"
     android:elevation="0dp"
     android:orientation="vertical"
     android:clickable="true"
     android:focusable="true">
 
-    <androidx.core.widget.NestedScrollView
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:fillViewport="true">
+        android:layout_weight="1">
 
-        <include layout="@layout/content_keywords" />
-    </androidx.core.widget.NestedScrollView>
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/keywordsScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
-    <!-- Universal Handle -->
+            <include layout="@layout/content_keywords" />
+        </androidx.core.widget.NestedScrollView>
+
+        <!-- Overlay fondu au scroll : fait disparaître doucement le contenu avant la poignée -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/scrim_modal_fade_bottom" />
+    </FrameLayout>
+
+    <!-- Universal Handle at the bottom of top sheet -->
     <include
         layout="@layout/view_panel_handle"
         android:id="@+id/keywordsHandle" />

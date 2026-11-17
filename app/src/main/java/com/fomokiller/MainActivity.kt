@@ -42,8 +42,16 @@ import android.util.TypedValue
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.materialswitch.MaterialSwitch
+import com.google.android.gms.wearable.DataClient
+import com.google.android.gms.wearable.DataEvent
+import com.google.android.gms.wearable.DataEventBuffer
+import com.google.android.gms.wearable.DataMapItem
+import com.google.android.gms.wearable.MessageClient
+import com.google.android.gms.wearable.MessageEvent
+import com.google.android.gms.wearable.Wearable
 
 class MainActivity : AppCompatActivity() {
+
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var settingsBehavior: BottomSheetBehavior<View>
@@ -52,6 +60,44 @@ class MainActivity : AppCompatActivity() {
 
     private var currentConfigMode = FomoMode.KILL_ALL
     private var isBlockAction = false
+
+    private var downloadedApkFile: java.io.File? = null
+
+    private val installPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (packageManager.canRequestPackageInstalls()) {
+                downloadedApkFile?.let { file -> launchApkInstall(file) } ?: deleteDownloadedApk()
+            } else {
+                // Permission not granted: delete APK as requested
+                deleteDownloadedApk()
+            }
+        } else {
+            deleteDownloadedApk()
+        }
+    }
+
+    private val installApkLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        // When installation completes or is cancelled, clean up the temporary apk
+        deleteDownloadedApk()
+    }
+
+    private fun deleteDownloadedApk() {
+        try {
+            downloadedApkFile?.let { file ->
+                if (file.exists()) file.delete()
+            }
+            downloadedApkFile = null
+            // Nettoyer également tout fichier résiduel dans le dossier updates
+            val updateDir = java.io.File(cacheDir, "updates")
+            if (updateDir.exists()) {
+                updateDir.listFiles()?.forEach { it.delete() }
+            }
+        } catch (_: Exception) {}
+    }
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -68,6 +114,44 @@ class MainActivity : AppCompatActivity() {
             updateUI()
         }
     }
+
+    private val wearMessageListener = MessageClient.OnMessageReceivedListener { messageEvent ->
+        if (messageEvent.path == WearSyncHelper.PATH_SET_MODE) {
+            val modeStr = String(messageEvent.data, Charsets.UTF_8)
+            try {
+                val mode = FomoMode.valueOf(modeStr)
+                runOnUiThread {
+                    AppState.currentMode = mode
+                    FomoNotificationService.instance?.applyCurrentMode()
+                    updateUI()
+                    WearSyncHelper.broadcastModeToWear(this, mode)
+                }
+            } catch (_: Exception) {}
+        } else if (messageEvent.path == WearSyncHelper.PATH_REQUEST_MODE) {
+            WearSyncHelper.broadcastModeToWear(this, AppState.currentMode)
+        }
+    }
+
+    private val wearDataListener = DataClient.OnDataChangedListener { dataEvents ->
+        for (event in dataEvents) {
+            if (event.type == DataEvent.TYPE_CHANGED && event.dataItem.uri.path == WearSyncHelper.DATA_PATH_REQUEST) {
+                try {
+                    val dataMap = DataMapItem.fromDataItem(event.dataItem).dataMap
+                    val modeStr = dataMap.getString(WearSyncHelper.KEY_MODE)
+                    if (modeStr != null) {
+                        val mode = FomoMode.valueOf(modeStr)
+                        runOnUiThread {
+                            AppState.currentMode = mode
+                            FomoNotificationService.instance?.applyCurrentMode()
+                            updateUI()
+                            WearSyncHelper.broadcastModeToWear(this, mode)
+                        }
+                    }
+                } catch (_: Exception) {}
+            }
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,6 +172,12 @@ class MainActivity : AppCompatActivity() {
         
         setupButtons()
         updateUI()
+
+        // Fetch Gist notes if internet is available
+        RemoteManager.fetchNotesIfAvailable(this)
+
+        // Check for updates if allowed by user and on Wi-Fi
+        checkForUpdatesIfAllowed()
     }
 
     private fun updateOrientationLock() {
@@ -200,6 +290,50 @@ class MainActivity : AppCompatActivity() {
         findViewById<View>(R.id.keywordsHandle)?.apply {
             findViewById<View>(R.id.handleIndicator).alpha = 0.8f
             setOnClickListener { toggleKeywords(false) }
+            
+            // Drag gesture on handle to follow finger slowly
+            var startY = 0f
+            var initialTranslationY = 0f
+            var isDragging = false
+            
+            setOnTouchListener { view, event ->
+                val panel = findViewById<View>(R.id.keywordsPanel) ?: return@setOnTouchListener false
+                val scrim = findViewById<View>(R.id.settingsScrim)
+                when (event.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        startY = event.rawY
+                        initialTranslationY = panel.translationY
+                        isDragging = true
+                        true
+                    }
+                    MotionEvent.ACTION_MOVE -> {
+                        if (isDragging) {
+                            val deltaY = event.rawY - startY
+                            val newY = (initialTranslationY + deltaY).coerceIn(-panel.height.toFloat(), 0f)
+                            panel.translationY = newY
+                            val progress = 1f - (-newY / panel.height.toFloat())
+                            scrim?.visibility = if (progress > 0.05f) View.VISIBLE else View.GONE
+                            scrim?.alpha = progress * 0.6f
+                        }
+                        true
+                    }
+                    MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                        if (isDragging) {
+                            isDragging = false
+                            val currentY = panel.translationY
+                            val halfHeight = -panel.height.toFloat() / 2f
+                            // If dragged more than halfway down, open fully; otherwise close
+                            if (currentY > halfHeight) {
+                                toggleKeywords(true)
+                            } else {
+                                toggleKeywords(false)
+                            }
+                        }
+                        true
+                    }
+                    else -> false
+                }
+            }
         }
 
         val toggleMode = findViewById<MaterialButtonToggleGroup>(R.id.toggleGroupKeywordMode)
@@ -280,6 +414,10 @@ class MainActivity : AppCompatActivity() {
                     scrim.visibility = View.GONE
                 } else {
                     scrim.visibility = View.VISIBLE
+                    if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                        bottomSheet.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
+                        updateMessageTile()
+                    }
                 }
             }
 
@@ -326,8 +464,142 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        val switchAutoUpdate = findViewById<MaterialSwitch>(R.id.switchAutoUpdate)
+        switchAutoUpdate.isChecked = AppState.autoUpdateEnabled
+        switchAutoUpdate.setOnCheckedChangeListener { _, isChecked ->
+            AppState.autoUpdateEnabled = isChecked
+            if (!isChecked) {
+                // Si désactivé, on coupe immédiatement tout état en attente et on supprime l'APK
+                RemoteManager.clearPendingUpdate()
+                deleteDownloadedApk()
+                updateMessageTile()
+            } else {
+                // Si activé, on vérifie si une mise à jour est disponible
+                checkForUpdatesIfAllowed()
+            }
+        }
+
         loadAboutMarkdown()
         setupSupportLink()
+        updateMessageTile()
+    }
+
+    private fun checkForUpdatesIfAllowed() {
+        if (!AppState.autoUpdateEnabled) return
+        val currentVer = try {
+            packageManager.getPackageInfo(packageName, 0).versionName ?: "1.0"
+        } catch (_: Exception) { "1.0" }
+        RemoteManager.fetchUpdateIfWifi(this, currentVer) {
+            runOnUiThread {
+                updateMessageTile()
+            }
+        }
+    }
+
+    private fun updateMessageTile() {
+        val tile = findViewById<View>(R.id.messageTile) ?: return
+        val titleView = findViewById<TextView>(R.id.messageTileTitle) ?: return
+        val descView = findViewById<TextView>(R.id.messageTileDesc) ?: return
+
+        // 1. Priorité à la mise à jour si disponible ET autorisée
+        val update = if (AppState.autoUpdateEnabled) RemoteManager.pendingUpdate else null
+        if (update != null) {
+            tile.visibility = View.VISIBLE
+            titleView.text = getString(R.string.update_available_title)
+            descView.text = update.remoteVersion
+            tile.setOnClickListener {
+                startApkDownload(update.downloadUrl)
+            }
+            return
+        }
+
+        // 2. Sinon, afficher une note au hasard si disponible
+        val note = RemoteManager.getRandomNote()
+        if (note != null) {
+            tile.visibility = View.VISIBLE
+            titleView.text = note.title
+            descView.text = note.description
+            tile.setOnClickListener {
+                if (note.link.isNotEmpty()) {
+                    try {
+                        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(note.link))
+                        startActivity(browserIntent)
+                    } catch (_: Exception) {}
+                }
+            }
+        } else {
+            tile.visibility = View.GONE
+        }
+    }
+
+    private fun startApkDownload(downloadUrl: String) {
+        Toast.makeText(this, getString(R.string.update_downloading), Toast.LENGTH_SHORT).show()
+        Thread {
+            try {
+                val url = java.net.URL(downloadUrl)
+                val conn = url.openConnection() as java.net.HttpURLConnection
+                conn.connectTimeout = 15000
+                conn.readTimeout = 15000
+                conn.connect()
+
+                if (conn.responseCode == 200) {
+                    val updateDir = java.io.File(cacheDir, "updates")
+                    if (!updateDir.exists()) updateDir.mkdirs()
+                    val apkFile = java.io.File(updateDir, "update.apk")
+                    if (apkFile.exists()) apkFile.delete()
+
+                    conn.inputStream.use { input ->
+                        apkFile.outputStream().use { output ->
+                            input.copyTo(output)
+                        }
+                    }
+                    downloadedApkFile = apkFile
+
+                    runOnUiThread {
+                        promptApkInstall(apkFile)
+                    }
+                } else {
+                    runOnUiThread {
+                        Toast.makeText(this, getString(R.string.update_error), Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                runOnUiThread {
+                    Toast.makeText(this, getString(R.string.update_error), Toast.LENGTH_SHORT).show()
+                }
+            }
+        }.start()
+    }
+
+    private fun promptApkInstall(apkFile: java.io.File) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (!packageManager.canRequestPackageInstalls()) {
+                val intent = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES).apply {
+                    data = Uri.parse("package:$packageName")
+                }
+                installPermissionLauncher.launch(intent)
+                return
+            }
+        }
+        launchApkInstall(apkFile)
+    }
+
+    private fun launchApkInstall(apkFile: java.io.File) {
+        try {
+            val contentUri = androidx.core.content.FileProvider.getUriForFile(
+                this,
+                "$packageName.fileprovider",
+                apkFile
+            )
+            val installIntent = Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(contentUri, "application/vnd.android.package-archive")
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION
+            }
+            installApkLauncher.launch(installIntent)
+        } catch (e: Exception) {
+            deleteDownloadedApk()
+            Toast.makeText(this, getString(R.string.error_msg, e.message), Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun setupSupportLink() {
@@ -429,7 +701,15 @@ class MainActivity : AppCompatActivity() {
         }
         
         updateUI()
+
+        // Enregistrer les écouteurs Wear OS en premier plan et synchroniser
+        try {
+            Wearable.getMessageClient(this).addListener(wearMessageListener)
+            Wearable.getDataClient(this).addListener(wearDataListener)
+            WearSyncHelper.broadcastModeToWear(this, AppState.currentMode)
+        } catch (_: Exception) {}
     }
+
 
     private fun checkRestrictedSettingsIfNeeded() {
         // Cette aide n'est pertinente que sur Android 13+
@@ -474,23 +754,31 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         try { unregisterReceiver(serviceStateReceiver) } catch (_: Exception) {}
+        try { Wearable.getMessageClient(this).removeListener(wearMessageListener) } catch (_: Exception) {}
+        try { Wearable.getDataClient(this).removeListener(wearDataListener) } catch (_: Exception) {}
     }
+
 
     private fun setupButtons() {
         binding.btnOff.setOnClickListener {
+            it.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
             updateMode(FomoMode.OFF)
         }
         binding.btnKillAll.setOnClickListener {
+            it.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
             updateMode(FomoMode.KILL_ALL)
         }
         binding.btnVipOnly.setOnClickListener {
+            it.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
             updateMode(FomoMode.VIP_ONLY)
         }
         binding.btnKillAll.setOnLongClickListener {
+            it.performHapticFeedback(android.view.HapticFeedbackConstants.LONG_PRESS)
             showAppPickerSheet(mode = "blocked")
             true
         }
         binding.btnVipOnly.setOnLongClickListener {
+            it.performHapticFeedback(android.view.HapticFeedbackConstants.LONG_PRESS)
             showAppPickerSheet(mode = "vip")
             true
         }
@@ -502,8 +790,10 @@ class MainActivity : AppCompatActivity() {
             return
         }
         AppState.currentMode = mode
+        WearSyncHelper.broadcastModeToWear(this, mode)
         
         val service = FomoNotificationService.instance
+
         if (service != null) {
             service.applyCurrentMode()
         } else {

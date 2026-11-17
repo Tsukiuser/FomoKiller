@@ -37,4 +37,10 @@
     <color name="btn_stroke_dark">#333333</color>
 
     <color name="scrim_color">#99000000</color>
+
+    <!-- Custom Modal Colors (Light Theme) -->
+    <color name="modal_bg">#FFFFFF</color>
+    <color name="modal_stroke">#E5E5E5</color>
+    <color name="modal_handle">#CCCCCC</color>
+    <color name="message_tile_bg">#F7F7F7</color>
 </resources>

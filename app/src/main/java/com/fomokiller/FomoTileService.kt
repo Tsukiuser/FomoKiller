@@ -49,8 +49,10 @@ class FomoTileService : TileService() {
         val newMode = if (currentMode == FomoMode.OFF) targetMode else FomoMode.OFF
         
         AppState.currentMode = newMode
+        WearSyncHelper.broadcastModeToWear(this, newMode)
         
         // Notifier le service de notification
+
         val service = FomoNotificationService.instance
         if (service != null) {
             service.applyCurrentMode()

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="?attr/colorSurface">
+    android:background="@drawable/bg_custom_modal_top">
 
     <!-- Universal Handle -->
     <include layout="@layout/view_panel_handle" />
@@ -38,14 +38,26 @@
         android:layout_marginVertical="32dp"
         android:visibility="visible" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/sheetRecyclerView"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:clipToPadding="false"
-        android:paddingBottom="8dp"
-        android:visibility="gone" />
+        android:layout_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/sheetRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="8dp"
+            android:visibility="gone" />
+
+        <!-- Overlay fondu au scroll vers le haut -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:layout_gravity="top"
+            android:background="@drawable/scrim_modal_fade_top" />
+    </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
