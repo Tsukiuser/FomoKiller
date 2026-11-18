@@ -45,14 +45,10 @@ Traditional **"Do Not Disturb" (DND)** modes are too binary: either you get inte
    ```bash
    git clone [https://github.com/Tsukiuser/FomoKiller.git](https://github.com/Tsukiuser/FomoKiller.git)
 
-```
-
 2. Open the project in **Android Studio**.
 3. Build and install the debug APK:
-```bash
-./gradlew assembleDebug
-
-```
+   ```bash
+   ./gradlew assembleDebug
 
 
 
