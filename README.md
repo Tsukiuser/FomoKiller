@@ -1,119 +1,134 @@
-# 📱 FomoKiller
+# 📱 FomoKiller — Smart Open-Source Notification Blocker for Android
 
-**FomoKiller** is an open-source Android app designed to give you back control over your distractions. Tired of being interrupted by useless notifications while still being afraid of missing an important call? FomoKiller is here for that.
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Android-green.svg)](https://www.android.com/)
+[![Status](https://img.shields.io/badge/Status-Beta-orange.svg)]()
+[![Privacy](https://img.shields.io/badge/Privacy-100%25_Local-brightgreen.svg)]()
 
-Be **serious**: who hasn't wanted to turn on "Do Not Disturb" to **focus** or just forget about their phone? Yet, every time you do, stress makes you check it constantly—and the moment you put it down for a second, **you miss an important call or message.** FomoKiller solves this by **automatically filtering** your notifications. Don't miss what matters: it's **free,** open-source, and **ad-free.**
-
----
-
-## 😎 Features
-
-- **🛡️ 100% Local & Private** : No server, no data collection. Your notifications stay on your phone.
-- **🚀 No frills** : A minimalist interface for maximum efficiency.
-- **⚙️ Three focus modes** :
-  - **Disabled** : Normal life. All notifications go through.
-  - **Enabled (Selective)** : Block only the culprits (social media, games, etc.). Everything else goes through.
-  - **Protected (VIP)** : The ultimate focus mode. Everything is blocked, except your VIP apps (family, work, emergencies) and system calls.
-- **🔍 Smart Filtering** : Precise control by allowing or blocking notifications based on specific keywords.
+**FomoKiller** is a free, ad-free, and open-source **Android notification manager and focus app**. It gives you back control over your digital wellbeing by automatically filtering out distracting notifications without making you miss urgent calls or important messages.
 
 ---
 
-## ✨ What's new
+## 🎯 Why FomoKiller?
 
-- **Better system integration** : Full integration with the Android system, including Quick Settings tiles and App Shortcuts.
-- **Enhanced automation** : The app is now compatible with Voice Assistants (Gemini, Bixby) and automation apps (Samsung Routines, Tasker, Google Assistant).
-- **Smart Filtering** : A new advanced filtering option allows you to allow or block notifications precisely using keywords.
+Traditional **"Do Not Disturb" (DND)** modes are too binary: either you get interrupted constantly, or you block everything and feel anxious about missing an emergency (FOMO — *Fear Of Missing Out*). 
 
-## 🛠️ Tech Stack
-
-- **Language** : Kotlin
-- **Architecture** : Singleton pattern for global state (`AppState`) and bound Service.
-- **UI** : Material Design 3, ViewBinding, BottomSheet for app selection.
-- **Core** : `NotificationListenerService` for surgical notification interception.
-- **Storage** : `SharedPreferences` for ultra-lightweight persistence.
+**FomoKiller** bridges that gap. It acts as a smart firewall for your notifications, keeping your phone quiet while ensuring critical alerts always reach you—100% locally on your device.
 
 ---
 
-## 📂 Project Structure
+## ✨ Key Features
+
+*   **⚙️ Three Custom Focus Modes:**
+    *   **Disabled:** Standard behavior. All notifications come through normally.
+    *   **Selective Mode:** Blocks only distracting apps (social media, games, shopping) while letting everything else through.
+    *   **Protected (VIP) Mode:** Maximum focus. Blocks *all* notifications except your chosen VIP apps (family, work, banking) and incoming phone calls.
+*   **🔍 Smart Keyword Filtering:** Fine-tune your focus by automatically allowing or blocking notifications containing specific keywords (e.g., *"Urgent"*, *"Code"*, *"Delivery"*).
+*   **⚡ Deep Android Integration:** Toggle focus modes effortlessly via **Quick Settings tiles** and **App Shortcuts**.
+*   **🤖 Automation & Voice Ready:** Compatible with **Gemini**, **Bixby**, **Google Assistant**, **Samsung Routines**, and **Tasker**.
+*   **🛡️ 100% Offline & Private:** Zero cloud servers, zero analytics, zero tracking. Your notification data never leaves your smartphone.
+
+---
+
+## 📥 How to Install
+
+### Option 1: Direct APK Download (Recommended for Users)
+1. Go to the [Releases Page](https://github.com/Tsukiuser/FomoKiller/releases).
+2. Download the latest `.apk` file onto your Android device.
+3. Open the file to install it (enable *"Install from unknown sources"* if prompted).
+4. **First Launch:** Grant the **Notification Access** permission when guided by the app so it can filter your alerts.
+
+> **⚠️ Installation Note (Google Play Protect):** Because FomoKiller is currently in **Beta** and uses an unsigned APK, Google Play Protect may display a warning during installation. Simply tap **"More details"** (or expand the message) and select **"Install anyway"**. You can verify the APK's safety anytime via [VirusTotal](https://www.virustotal.com/).
+
+### Option 2: Build from Source (For Developers)
+1. Clone this repository:
+   ```bash
+   git clone [https://github.com/Tsukiuser/FomoKiller.git](https://github.com/Tsukiuser/FomoKiller.git)
+
+```
+
+2. Open the project in **Android Studio**.
+3. Build and install the debug APK:
+```bash
+./gradlew assembleDebug
+
+```
+
+
+
+---
+
+## ⚙️ Recommended Setup (Battery Optimization)
+
+To prevent Android from killing FomoKiller in the background, disable battery optimization for the app. *(FomoKiller uses virtually zero battery).*
+
+1. **Long-press** the FomoKiller app icon on your home screen.
+2. Tap **App info** (or the **ⓘ** icon).
+3. Go to **Battery** (or *App battery usage*).
+4. Select **Unrestricted**.
+
+*Need help for your specific phone brand (Samsung, Xiaomi, OnePlus, etc.)? Check [Don't Kill My App](https://dontkillmyapp.com/).*
+
+---
+
+## 🔒 Privacy & Permissions
+
+Privacy isn't an option; it's the core architecture of FomoKiller:
+
+* **No Data Collection:** Your notifications are processed in real-time in your device's memory and are never saved or sent anywhere.
+* **Minimal Permissions:** Aside from *Notification Access*, the app only requests the `INTERNET` permission strictly to check for new GitHub releases and download updates.
+* **Auditable Code:** Fully open-source under the MIT License.
+
+---
+
+## ⚠️ Known Limitations & Beta Disclaimer
+
+* **Beta Software:** FomoKiller is under active development. Bugs or unexpected crashes may occur.
+* **Android Version Differences:** Filtering behavior may vary slightly depending on your Android version (especially on Android 11 and above) and manufacturer skin (OneUI, MIUI, Pixel UI).
+
+---
+
+## 🛠️ Technical Architecture (For Developers)
+
+### Tech Stack
+
+* **Language:** Kotlin
+* **UI Framework:** XML with ViewBinding & Material Design 3 (BottomSheet for app selection)
+* **Core Engine:** Android `NotificationListenerService` for real-time notification interception
+* **State & Persistence:** Singleton pattern (`AppState`) backed by `SharedPreferences`
+* **System Components:** `BroadcastReceiver` (`BootReceiver`) to automatically restore service state after a device reboot
+
+### Project Structure
 
 ```text
 fomokiller/
 ├── app/
 │   ├── src/main/
 │   │   ├── java/com/fomokiller/
-│   │   │   ├── MainActivity.kt           # Main interface & UI logic
-│   │   │   ├── FomoNotificationService.kt # System core (Interception)
-│   │   │   ├── AppState.kt                # Mode and preferences management
-│   │   │   └── BootReceiver.kt            # Restarts the service on boot
+│   │   │   ├── MainActivity.kt            # Main UI, permissions & BottomSheet triggers
+│   │   │   ├── FomoNotificationService.kt # Core NotificationListenerService logic
+│   │   │   ├── AppState.kt                # Global state & SharedPreferences manager
+│   │   │   └── BootReceiver.kt            # Restarts the filtering service on boot
 │   │   └── res/
-│   │       ├── layout/                    # XML layouts (Main, BottomSheet, Item)
-│   │       └── values/                    # Themes, Colors, Strings
+│   │       ├── layout/                    # XML layouts (Main, BottomSheet, List Items)
+│   │       └── values/                    # Material 3 Themes, Colors, Strings
 └── README.md
+
 ```
 
 ---
 
-## 📥 Installation
+## 🤝 Contributing & License
 
-You can install FomoKiller in two ways:
+Contributions, bug reports, and feature requests are welcome! Feel free to open an issue or submit a **Pull Request** (note that due to time constraints, PR reviews may take a little while).
 
-### Option 1: Direct Download (Recommended)
-1. Go to the [Releases](https://github.com/Tsukiuser/FomoKiller/releases) tab.
-2. Download the latest `.apk` file.
-3. Install it on your smartphone (allow unknown sources if necessary).
-4. If you have **installation issues** because of **Google Play Protect**, refer to [this section](https://github.com/Tsukiuser/FomoKiller#%EF%B8%8F-important-notes)
-
-### Option 2: Build from source
-1. Clone this repository.
-2. Open the project in **Android Studio**.
-3. Build and install (`./gradlew assembleDebug`).
-
-> **Important note**: To work, the app requires **"Notification Access"** permission. The app will guide you to the settings on first launch.
+Distributed under the **MIT License**. See the `LICENSE` file for details.
 
 ---
 
-## 🔒 Privacy
+*Built with ❤️ to help you reclaim your focus and time.*
 
-Privacy isn't an option, it's the foundation:
-- **Restricted internet access** : The app only have the `INTERNET` permission to check updates and download the new apk.
-- **Zero Cloud** : No data ever leaves your device.
-- **Open Source** : The code is transparent and auditable by everyone.
+```
 
----
 
-## 🔋 Battery Optimization
-
-For optimal use and operation, I recommend disabling battery optimization. The app is so lightweight that the system doesn't even register it. To do this:
-- **Long-press** the app icon from your home screen.
-- **Tap "App info,"** or the "🛈" icon
-- Scroll down to **"Battery"**
-- Select **"Unrestricted"**
-
-To learn more, visit [this site](https://dontkillmyapp.com/)
-
----
-
-## ⚠️ Important Notes
-
-- Please note that the app **may behave differently** depending on your Android version, particularly versions **later than Android 10**
-- The app is still in **BETA**, by using it you accept that the app **may not function properly, or even crash**
-- Some antivirus software may send you notifications about this app: particularly Google Play Protect, **which still lets you install it safely regardless**, if you still have doubt about the safety of this app, submit it in a virustotal.com test.
-- In the **BETA** version, the APK is **unsigned**, which may trigger a Google Play popup during installation: **Expand** the message, then **select "Install anyway"**
-
----
-
-## 🤝 Contributing
-
-Any **Pull Request** is welcome, I **won't be able** to inspect everything, which is why not all of them will be accepted
-
----
-
-## 📄 License
-
-Distributed under the MIT license. See `LICENSE` for more information.
-
----
-
-*Developed with ❤️ for those who want to reclaim their time.*
-
----
+```
