@@ -1,0 +1,186 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.fomokiller"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="26"
+9        android:targetSdkVersion="34" />
+10
+11    <uses-feature android:name="android.hardware.type.watch" />
+11-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:4:5-64
+11-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:4:19-61
+12
+13    <uses-permission android:name="android.permission.VIBRATE" />
+13-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:5:5-66
+13-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:5:22-63
+14    <uses-permission android:name="android.permission.WAKE_LOCK" />
+14-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:6:5-68
+14-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:6:22-65
+15
+16    <permission
+16-->[androidx.core:core:1.12.0] C:\Users\David\.gradle\caches\transforms-3\808f25e33273cf777e1c687f415f5885\transformed\core-1.12.0\AndroidManifest.xml:22:5-24:47
+17        android:name="com.fomokiller.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+17-->[androidx.core:core:1.12.0] C:\Users\David\.gradle\caches\transforms-3\808f25e33273cf777e1c687f415f5885\transformed\core-1.12.0\AndroidManifest.xml:23:9-81
+18        android:protectionLevel="signature" />
+18-->[androidx.core:core:1.12.0] C:\Users\David\.gradle\caches\transforms-3\808f25e33273cf777e1c687f415f5885\transformed\core-1.12.0\AndroidManifest.xml:24:9-44
+19
+20    <uses-permission android:name="com.fomokiller.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+20-->[androidx.core:core:1.12.0] C:\Users\David\.gradle\caches\transforms-3\808f25e33273cf777e1c687f415f5885\transformed\core-1.12.0\AndroidManifest.xml:26:5-97
+20-->[androidx.core:core:1.12.0] C:\Users\David\.gradle\caches\transforms-3\808f25e33273cf777e1c687f415f5885\transformed\core-1.12.0\AndroidManifest.xml:26:22-94
+21
+22    <application
+22-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:8:5-40:19
+23        android:allowBackup="true"
+23-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:9:9-35
+24        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+24-->[androidx.core:core:1.12.0] C:\Users\David\.gradle\caches\transforms-3\808f25e33273cf777e1c687f415f5885\transformed\core-1.12.0\AndroidManifest.xml:28:18-86
+25        android:extractNativeLibs="false"
+26        android:icon="@mipmap/ic_launcher"
+26-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:10:9-43
+27        android:label="@string/app_name"
+27-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:11:9-41
+28        android:roundIcon="@mipmap/ic_launcher_round"
+28-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:12:9-54
+29        android:supportsRtl="true"
+29-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:13:9-35
+30        android:theme="@style/Theme.FomoWear" >
+30-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:14:9-46
+31        <uses-library
+31-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:16:9-18:40
+32            android:name="com.google.android.wearable"
+32-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:17:13-55
+33            android:required="false" />
+33-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:18:13-37
+34
+35        <activity
+35-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:20:9-28:20
+36            android:name="com.fomokiller.WearMainActivity"
+36-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:21:13-45
+37            android:exported="true"
+37-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:22:13-36
+38            android:theme="@style/Theme.FomoWear" >
+38-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:23:13-50
+39            <intent-filter>
+39-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:24:13-27:29
+40                <action android:name="android.intent.action.MAIN" />
+40-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:25:17-69
+40-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:25:25-66
+41
+42                <category android:name="android.intent.category.LAUNCHER" />
+42-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:26:17-77
+42-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:26:27-74
+43            </intent-filter>
+44        </activity>
+45
+46        <service
+46-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:30:9-38:19
+47            android:name="com.fomokiller.WearMessageListenerService"
+47-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:31:13-55
+48            android:exported="true" >
+48-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:32:13-36
+49            <intent-filter>
+49-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:33:13-37:29
+50                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
+50-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:34:17-91
+50-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:34:25-88
+51                <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
+51-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:35:17-87
+51-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:35:25-84
+52
+53                <data
+53-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:36:17-87
+54                    android:host="*"
+54-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:36:45-61
+55                    android:pathPrefix="/"
+55-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:36:62-84
+56                    android:scheme="wear" />
+56-->C:\Users\David\Downloads\FomoKiller\fomokiller\wear\src\main\AndroidManifest.xml:36:23-44
+57            </intent-filter>
+58        </service>
+59
+60        <provider
+60-->[androidx.emoji2:emoji2:1.2.0] C:\Users\David\.gradle\caches\transforms-3\8262367a11bda1b4b9cedc24dd567015\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:24:9-32:20
+61            android:name="androidx.startup.InitializationProvider"
+61-->[androidx.emoji2:emoji2:1.2.0] C:\Users\David\.gradle\caches\transforms-3\8262367a11bda1b4b9cedc24dd567015\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:25:13-67
+62            android:authorities="com.fomokiller.androidx-startup"
+62-->[androidx.emoji2:emoji2:1.2.0] C:\Users\David\.gradle\caches\transforms-3\8262367a11bda1b4b9cedc24dd567015\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:26:13-68
+63            android:exported="false" >
+63-->[androidx.emoji2:emoji2:1.2.0] C:\Users\David\.gradle\caches\transforms-3\8262367a11bda1b4b9cedc24dd567015\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:27:13-37
+64            <meta-data
+64-->[androidx.emoji2:emoji2:1.2.0] C:\Users\David\.gradle\caches\transforms-3\8262367a11bda1b4b9cedc24dd567015\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:29:13-31:52
+65                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+65-->[androidx.emoji2:emoji2:1.2.0] C:\Users\David\.gradle\caches\transforms-3\8262367a11bda1b4b9cedc24dd567015\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:30:17-75
+66                android:value="androidx.startup" />
+66-->[androidx.emoji2:emoji2:1.2.0] C:\Users\David\.gradle\caches\transforms-3\8262367a11bda1b4b9cedc24dd567015\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:31:17-49
+67            <meta-data
+67-->[androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\David\.gradle\caches\transforms-3\b973978f497d8978f2539821f2ee7b26\transformed\jetified-lifecycle-process-2.6.1\AndroidManifest.xml:29:13-31:52
+68                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+68-->[androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\David\.gradle\caches\transforms-3\b973978f497d8978f2539821f2ee7b26\transformed\jetified-lifecycle-process-2.6.1\AndroidManifest.xml:30:17-78
+69                android:value="androidx.startup" />
+69-->[androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\David\.gradle\caches\transforms-3\b973978f497d8978f2539821f2ee7b26\transformed\jetified-lifecycle-process-2.6.1\AndroidManifest.xml:31:17-49
+70            <meta-data
+70-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\David\.gradle\caches\transforms-3\20fdc5f449a51857d21c008767a0c843\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:29:13-31:52
+71                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+71-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\David\.gradle\caches\transforms-3\20fdc5f449a51857d21c008767a0c843\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:30:17-85
+72                android:value="androidx.startup" />
+72-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\David\.gradle\caches\transforms-3\20fdc5f449a51857d21c008767a0c843\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:31:17-49
+73        </provider>
+74
+75        <activity
+75-->[com.google.android.gms:play-services-base:18.5.0] C:\Users\David\.gradle\caches\transforms-3\ada9d08cbb5ca978902640adaac21e06\transformed\jetified-play-services-base-18.5.0\AndroidManifest.xml:5:9-173
+76            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+76-->[com.google.android.gms:play-services-base:18.5.0] C:\Users\David\.gradle\caches\transforms-3\ada9d08cbb5ca978902640adaac21e06\transformed\jetified-play-services-base-18.5.0\AndroidManifest.xml:5:19-85
+77            android:exported="false"
+77-->[com.google.android.gms:play-services-base:18.5.0] C:\Users\David\.gradle\caches\transforms-3\ada9d08cbb5ca978902640adaac21e06\transformed\jetified-play-services-base-18.5.0\AndroidManifest.xml:5:146-170
+78            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+78-->[com.google.android.gms:play-services-base:18.5.0] C:\Users\David\.gradle\caches\transforms-3\ada9d08cbb5ca978902640adaac21e06\transformed\jetified-play-services-base-18.5.0\AndroidManifest.xml:5:86-145
+79
+80        <meta-data
+80-->[com.google.android.gms:play-services-basement:18.4.0] C:\Users\David\.gradle\caches\transforms-3\4b8b98945219a13b0a877c4508a1cd76\transformed\jetified-play-services-basement-18.4.0\AndroidManifest.xml:6:9-122
+81            android:name="com.google.android.gms.version"
+81-->[com.google.android.gms:play-services-basement:18.4.0] C:\Users\David\.gradle\caches\transforms-3\4b8b98945219a13b0a877c4508a1cd76\transformed\jetified-play-services-basement-18.4.0\AndroidManifest.xml:6:20-65
+82            android:value="@integer/google_play_services_version" />
+82-->[com.google.android.gms:play-services-basement:18.4.0] C:\Users\David\.gradle\caches\transforms-3\4b8b98945219a13b0a877c4508a1cd76\transformed\jetified-play-services-basement-18.4.0\AndroidManifest.xml:6:66-119
+83
+84        <receiver
+84-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\David\.gradle\caches\transforms-3\20fdc5f449a51857d21c008767a0c843\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:34:9-52:20
+85            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+85-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\David\.gradle\caches\transforms-3\20fdc5f449a51857d21c008767a0c843\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:35:13-76
+86            android:directBootAware="false"
+86-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\David\.gradle\caches\transforms-3\20fdc5f449a51857d21c008767a0c843\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:36:13-44
+87            android:enabled="true"
+87-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\David\.gradle\caches\transforms-3\20fdc5f449a51857d21c008767a0c843\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:37:13-35
+88            android:exported="true"
+88-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\David\.gradle\caches\transforms-3\20fdc5f449a51857d21c008767a0c843\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:38:13-36
+89            android:permission="android.permission.DUMP" >
+89-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\David\.gradle\caches\transforms-3\20fdc5f449a51857d21c008767a0c843\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:39:13-57
+90            <intent-filter>
+90-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\David\.gradle\caches\transforms-3\20fdc5f449a51857d21c008767a0c843\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:40:13-42:29
+91                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+91-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\David\.gradle\caches\transforms-3\20fdc5f449a51857d21c008767a0c843\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:41:17-91
+91-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\David\.gradle\caches\transforms-3\20fdc5f449a51857d21c008767a0c843\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:41:25-88
+92            </intent-filter>
+93            <intent-filter>
+93-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\David\.gradle\caches\transforms-3\20fdc5f449a51857d21c008767a0c843\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:43:13-45:29
+94                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+94-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\David\.gradle\caches\transforms-3\20fdc5f449a51857d21c008767a0c843\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:44:17-85
+94-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\David\.gradle\caches\transforms-3\20fdc5f449a51857d21c008767a0c843\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:44:25-82
+95            </intent-filter>
+96            <intent-filter>
+96-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\David\.gradle\caches\transforms-3\20fdc5f449a51857d21c008767a0c843\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:46:13-48:29
+97                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+97-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\David\.gradle\caches\transforms-3\20fdc5f449a51857d21c008767a0c843\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:47:17-88
+97-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\David\.gradle\caches\transforms-3\20fdc5f449a51857d21c008767a0c843\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:47:25-85
+98            </intent-filter>
+99            <intent-filter>
+99-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\David\.gradle\caches\transforms-3\20fdc5f449a51857d21c008767a0c843\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:49:13-51:29
+100                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+100-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\David\.gradle\caches\transforms-3\20fdc5f449a51857d21c008767a0c843\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:50:17-95
+100-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\David\.gradle\caches\transforms-3\20fdc5f449a51857d21c008767a0c843\transformed\jetified-profileinstaller-1.3.0\AndroidManifest.xml:50:25-92
+101            </intent-filter>
+102        </receiver>
+103    </application>
+104
+105</manifest>

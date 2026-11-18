@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FomoKiller</string>
+    <string name="desc_kill_all">Appui long pour choisir les apps à bloquer</string>
+    <string name="desc_off">Toutes les notifications passent</string>
+    <string name="desc_vip_only">Appui long pour choisir les apps VIP</string>
+    <string name="mode_kill_all">Activé</string>
+    <string name="mode_off">Désactivé</string>
+    <string name="mode_vip_only">Protégé</string>
+</resources>
