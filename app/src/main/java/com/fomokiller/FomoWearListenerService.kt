@@ -85,13 +85,7 @@ class FomoWearListenerService : WearableListenerService() {
         if (AppState.currentMode == mode) return
         AppState.currentMode = mode
 
-        val service = FomoNotificationService.instance
-        if (service != null) {
-            service.applyCurrentMode()
-        } else {
-            val componentName = ComponentName(this, FomoNotificationService::class.java)
-            NotificationListenerService.requestRebind(componentName)
-        }
+        FomoNotificationService.triggerApplyMode(this)
 
         // Notifier l'activité principale pour mettre à jour l'UI téléphone si ouverte
         sendBroadcast(Intent(FomoNotificationService.ACTION_STATE_CHANGED).apply {

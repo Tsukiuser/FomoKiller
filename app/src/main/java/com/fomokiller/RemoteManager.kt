@@ -20,11 +20,13 @@ data class FomoUpdateInfo(
 
 object RemoteManager {
 
-    private const val GIST_NOTES_URL = "https://gist.githubusercontent.com/Tsukiuser/82ceda41adcabf5062525063c61dff67/raw/350d3a94c8e2d7ac13991e12f0f56b85fb946cbd/fomokillernote"
-    private const val GIST_UPDATE_URL = "https://gist.githubusercontent.com/Tsukiuser/3ae7d0246fb8eb98aecd4eccac77d63d/raw/5388eafb9541028186e2b01eea40f8632be2e125/fomokillerupdate"
+    private const val GIST_NOTES_URL = "https://gist.githubusercontent.com/Tsukiuser/82ceda41adcabf5062525063c61dff67/raw"
+    private const val GIST_UPDATE_URL = "https://gist.githubusercontent.com/Tsukiuser/3ae7d0246fb8eb98aecd4eccac77d63d/raw"
 
     var cachedNotes: List<FomoNote> = emptyList()
         private set
+
+    var selectedSessionNote: FomoNote? = null
 
     var pendingUpdate: FomoUpdateInfo? = null
 
@@ -61,6 +63,9 @@ object RemoteManager {
                     val rawText = connection.inputStream.bufferedReader().use { it.readText() }
                     val parsed = parseNotes(rawText)
                     cachedNotes = parsed
+                    if (parsed.isNotEmpty() && selectedSessionNote == null) {
+                        selectedSessionNote = parsed[Random.nextInt(parsed.size)]
+                    }
                     onComplete?.invoke(parsed)
                 }
             } catch (_: Exception) {}
@@ -91,8 +96,10 @@ object RemoteManager {
     }
 
     fun getRandomNote(): FomoNote? {
+        if (selectedSessionNote != null) return selectedSessionNote
         if (cachedNotes.isEmpty()) return null
-        return cachedNotes[Random.nextInt(cachedNotes.size)]
+        selectedSessionNote = cachedNotes[Random.nextInt(cachedNotes.size)]
+        return selectedSessionNote
     }
 
     fun parseNotes(content: String): List<FomoNote> {

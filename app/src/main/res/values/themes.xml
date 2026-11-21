@@ -20,7 +20,7 @@
     </style>
 
     <style name="CustomBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
-        <item name="android:background">@drawable/bg_custom_modal_top</item>
+        <item name="android:background">@android:color/transparent</item>
     </style>
 
     <style name="Widget.FomoKiller.ModeButton" parent="Widget.Material3.Button.OutlinedButton">

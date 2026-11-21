@@ -5,6 +5,8 @@
 [![Status](https://img.shields.io/badge/Status-Beta-orange.svg)]()
 [![Privacy](https://img.shields.io/badge/Privacy-100%25_Local-brightgreen.svg)]()
 
+<a href="/USING.md" style="display: inline-block; background-color: #1C1C1C; color: #6C6C6C; border: 1px solid #2B2B2B; border-radius: 6px; padding: 6px 12px; text-decoration: none; font-family: sans-serif; font-size: 14px;">> Begin the guide</a>
+
 **FomoKiller** is a free, ad-free, and open-source **Android notification manager and focus app**. It gives you back control over your digital wellbeing by automatically filtering out distracting notifications without making you miss urgent calls or important messages.
 
 ![screenshots](/screenshots.png)

@@ -3,6 +3,7 @@ package com.fomokiller
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -16,9 +17,33 @@ class FomoNotificationService : NotificationListenerService() {
 
     companion object {
         private const val TAG = "FomoKiller"
-        private const val CHANNEL_ID = "fomo_recovered"
+        const val CHANNEL_DEFAULT_ID = "fomo_recovered_default"
+        const val CHANNEL_SILENT_ID = "fomo_recovered_silent"
         const val ACTION_STATE_CHANGED = "com.fomokiller.STATE_CHANGED"
+        const val ACTION_REQUEST_APPLY_MODE = "com.fomokiller.REQUEST_APPLY_MODE"
         var instance: FomoNotificationService? = null
+
+        fun triggerApplyMode(context: Context) {
+            val s = instance
+            if (s != null) {
+                s.applyCurrentMode()
+            } else {
+                try {
+                    val intent = Intent(context, FomoNotificationService::class.java).apply {
+                        action = ACTION_REQUEST_APPLY_MODE
+                    }
+                    context.startService(intent)
+                } catch (e: Exception) {
+                    Log.w(TAG, "startService non autorisé ou échoué: ${e.message}")
+                }
+                try {
+                    val componentName = ComponentName(context, FomoNotificationService::class.java)
+                    NotificationListenerService.requestRebind(componentName)
+                } catch (e: Exception) {
+                    Log.w(TAG, "requestRebind échoué: ${e.message}")
+                }
+            }
+        }
     }
 
     private val heldNotifications = mutableMapOf<String, HeldNotif>()
@@ -28,26 +53,65 @@ class FomoNotificationService : NotificationListenerService() {
         val tag: String?,
         val id: Int,
         val notification: Notification,
-        val key: String
+        val key: String,
+        val originalChannelId: String? = null
     )
 
     override fun onCreate() {
         super.onCreate()
         AppState.init(applicationContext)
-        createNotificationChannel()
+        createNotificationChannels()
+        loadPersistedNotifications()
         Log.d(TAG, "onCreate — service créé")
     }
 
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "Notifications restaurées"
-            val descriptionText = "Notifications qui ont été temporairement bloquées"
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
-                description = descriptionText
+    private fun loadPersistedNotifications() {
+        try {
+            val list = NotificationStorage.loadAll(this)
+            for (sbn in list) {
+                val pkg = sbn.packageName ?: continue
+                val channelId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) sbn.notification.channelId else null
+                heldNotifications[sbn.key] = HeldNotif(
+                    packageName = pkg,
+                    tag = sbn.tag,
+                    id = sbn.id,
+                    notification = sbn.notification,
+                    key = sbn.key,
+                    originalChannelId = channelId
+                )
             }
+            Log.d(TAG, "Notifications persistées rechargées: ${heldNotifications.size}")
+        } catch (e: Exception) {
+            Log.e(TAG, "Erreur chargement notifications: ${e.message}")
+        }
+    }
+
+    private fun createNotificationChannels() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            nm.createNotificationChannel(channel)
+
+            // Canal par défaut (avec son/vibration)
+            val defaultChannel = NotificationChannel(
+                CHANNEL_DEFAULT_ID,
+                "Notifications restaurées",
+                NotificationManager.IMPORTANCE_DEFAULT
+            ).apply {
+                description = "Notifications qui ont été temporairement bloquées"
+            }
+            nm.createNotificationChannel(defaultChannel)
+
+            // Canal silencieux (pour préserver le silence des notifications d'origine discrètes)
+            val silentChannel = NotificationChannel(
+                CHANNEL_SILENT_ID,
+                "Notifications restaurées (Silencieuses)",
+                NotificationManager.IMPORTANCE_LOW
+            ).apply {
+                description = "Notifications silencieuses restaurées"
+                enableLights(false)
+                enableVibration(false)
+                setSound(null, null)
+            }
+            nm.createNotificationChannel(silentChannel)
         }
     }
 
@@ -61,7 +125,6 @@ class FomoNotificationService : NotificationListenerService() {
         super.onListenerConnected()
         instance = this
         Log.d(TAG, "onListenerConnected — prêt")
-        // Délai pour laisser le système se synchroniser
         Handler(Looper.getMainLooper()).postDelayed({
             applyCurrentMode()
         }, 500)
@@ -75,21 +138,25 @@ class FomoNotificationService : NotificationListenerService() {
         sendBroadcast(Intent(ACTION_STATE_CHANGED))
     }
 
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (intent?.action == ACTION_REQUEST_APPLY_MODE) {
+            applyCurrentMode()
+        }
+        return super.onStartCommand(intent, flags, startId)
+    }
+
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
         sbn ?: return
         val pkg = sbn.packageName ?: return
+
+        // 1. Si c'est notre propre application, ignorer sans intercepter
         if (pkg == packageName) return
 
-        val extras = sbn.notification.extras
-        val title = extras?.getCharSequence(Notification.EXTRA_TITLE)?.toString()
-        val text = extras?.getCharSequence(Notification.EXTRA_TEXT)?.toString()
+        // 2. Ne jamais bloquer les notifications ongoing / permanentes (appels, lecteur musique, GPS, etc.)
+        if (sbn.isOngoing) return
 
+        val (title, text) = NotificationTextExtractor.extractFullText(sbn)
         val shouldBlock = AppState.shouldBlockNotification(pkg, title, text)
-        
-        // Si c'est une notification qu'on vient de restaurer nous-même, on l'ignore
-        if (sbn.notification.extras.getBoolean("fomokiller_restored", false)) {
-            return
-        }
 
         Log.d(TAG, "onNotificationPosted: $pkg — bloquer: $shouldBlock — mode: ${AppState.currentMode}")
 
@@ -97,19 +164,17 @@ class FomoNotificationService : NotificationListenerService() {
             holdAndCancel(sbn)
         } else {
             heldNotifications.remove(sbn.key)
+            NotificationStorage.remove(this, sbn.key)
         }
     }
 
     override fun onNotificationRemoved(sbn: StatusBarNotification?) {
         sbn ?: return
-        val pkg = sbn.packageName ?: return
-        val extras = sbn.notification.extras
-        val title = extras?.getCharSequence(Notification.EXTRA_TITLE)?.toString()
-        val text = extras?.getCharSequence(Notification.EXTRA_TEXT)?.toString()
-
-        if (!AppState.shouldBlockNotification(pkg, title, text)) {
-            heldNotifications.remove(sbn.key)
-        }
+        // Si l'application émettrice supprime sa notification à la source (ex: message lu sur le Web),
+        // on la retire toujours de notre rétention pour ne pas la restaurer inutilement plus tard.
+        heldNotifications.remove(sbn.key)
+        NotificationStorage.remove(this, sbn.key)
+        Log.d(TAG, "Notification retirée de la source: ${sbn.key}")
     }
 
     fun applyCurrentMode() {
@@ -129,13 +194,12 @@ class FomoNotificationService : NotificationListenerService() {
                     for (sbn in active) {
                         val pkg = sbn.packageName ?: continue
                         if (pkg == packageName) continue
+                        if (sbn.isOngoing) continue
                         
                         // Si déjà en mémoire, on ne traite pas à nouveau
                         if (heldNotifications.containsKey(sbn.key)) continue
 
-                        val extras = sbn.notification.extras
-                        val title = extras?.getCharSequence(Notification.EXTRA_TITLE)?.toString()
-                        val text = extras?.getCharSequence(Notification.EXTRA_TEXT)?.toString()
+                        val (title, text) = NotificationTextExtractor.extractFullText(sbn)
 
                         if (AppState.shouldBlockNotification(pkg, title, text)) {
                             Log.d(TAG, "Interception notif: $pkg")
@@ -153,13 +217,18 @@ class FomoNotificationService : NotificationListenerService() {
 
     private fun holdAndCancel(sbn: StatusBarNotification) {
         val pkg = sbn.packageName ?: return
+        val channelId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) sbn.notification.channelId else null
+        
         heldNotifications[sbn.key] = HeldNotif(
             packageName = pkg,
             tag = sbn.tag,
             id = sbn.id,
             notification = sbn.notification,
-            key = sbn.key
+            key = sbn.key,
+            originalChannelId = channelId
         )
+        NotificationStorage.save(this, sbn)
+
         try {
             cancelNotification(sbn.key)
             Log.d(TAG, "Notification supprimée de la barre d'état: $pkg")
@@ -172,14 +241,17 @@ class FomoNotificationService : NotificationListenerService() {
         if (heldNotifications.isEmpty()) return
         Log.d(TAG, "Relâchement total: ${heldNotifications.size} notifications")
         val toRelease = heldNotifications.values.toList()
+        
+        // On vide la mémoire et le stockage persistant car la session est terminée (mode OFF)
         heldNotifications.clear()
+        NotificationStorage.clear(this)
         
         if (AppState.reDisplayNotifications) {
             for (held in toRelease) {
                 repostNotification(held)
             }
         } else {
-            Log.d(TAG, "Restauration désactivée par les paramètres")
+            Log.d(TAG, "Restauration désactivée par les paramètres (reDisplayNotifications = false)")
         }
     }
 
@@ -187,8 +259,7 @@ class FomoNotificationService : NotificationListenerService() {
         val keysToRemove = heldNotifications.filter { entry ->
             val held = entry.value
             val extras = held.notification.extras
-            val title = extras?.getCharSequence(Notification.EXTRA_TITLE)?.toString()
-            val text = extras?.getCharSequence(Notification.EXTRA_TEXT)?.toString()
+            val (title, text) = NotificationTextExtractor.extractFullText(extras)
             !AppState.shouldBlockNotification(held.packageName, title, text) 
         }.keys
         if (keysToRemove.isEmpty()) return
@@ -196,10 +267,30 @@ class FomoNotificationService : NotificationListenerService() {
         Log.d(TAG, "Relâchement partiel: ${keysToRemove.size} notifications")
         for (key in keysToRemove) {
             val held = heldNotifications.remove(key)
+            NotificationStorage.remove(this, key)
             if (held != null && AppState.reDisplayNotifications) {
                 repostNotification(held)
             }
         }
+    }
+
+    private fun determineChannelId(held: HeldNotif): String {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val originalChannel = held.originalChannelId?.lowercase() ?: ""
+            // Si le canal d'origine mentionne "silent", "quiet", "discret" ou si l'importance est basse
+            if (originalChannel.contains("silent") || originalChannel.contains("quiet") || originalChannel.contains("discret")) {
+                return CHANNEL_SILENT_ID
+            }
+            // Vérification si la notification ne fait ni son ni vibration
+            val isSilent = (held.notification.defaults and Notification.DEFAULT_SOUND == 0) &&
+                    (held.notification.defaults and Notification.DEFAULT_VIBRATE == 0) &&
+                    held.notification.sound == null &&
+                    held.notification.vibrate == null
+            if (isSilent) {
+                return CHANNEL_SILENT_ID
+            }
+        }
+        return CHANNEL_DEFAULT_ID
     }
 
     private fun repostNotification(held: HeldNotif) {
@@ -217,8 +308,9 @@ class FomoNotificationService : NotificationListenerService() {
                 return
             }
 
+            val targetChannelId = determineChannelId(held)
             val builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Notification.Builder(this, CHANNEL_ID)
+                Notification.Builder(this, targetChannelId)
             } else {
                 @Suppress("DEPRECATION")
                 Notification.Builder(this)
@@ -231,7 +323,7 @@ class FomoNotificationService : NotificationListenerService() {
             builder.setContentTitle(title)
                 .setContentText(text)
                 .setSmallIcon(held.notification.smallIcon) 
-                .setLargeIcon(held.notification.getLargeIcon()) // On récupère directement l'icône de la notif d'origine
+                .setLargeIcon(held.notification.getLargeIcon())
                 .setSubText(appLabel) 
                 .setContentIntent(held.notification.contentIntent)
                 .setDeleteIntent(held.notification.deleteIntent)
@@ -245,12 +337,11 @@ class FomoNotificationService : NotificationListenerService() {
                 builder.addAction(action)
             }
 
-            // On s'assure que la notification restaurée n'est pas interceptée par FomoKiller à nouveau
-            val newNotification = builder.build()
-            newNotification.extras.putBoolean("fomokiller_restored", true)
+            // Tag composite unique prévenant toute collision d'ID entre applications distinctes
+            val uniqueTag = "fomo_${held.packageName}_${held.tag ?: ""}"
 
-            nm.notify(held.tag, held.id, newNotification)
-            Log.d(TAG, "Notification relâchée avec identité: ${held.packageName}")
+            nm.notify(uniqueTag, held.id, builder.build())
+            Log.d(TAG, "Notification relâchée avec tag unique: $uniqueTag (id: ${held.id})")
         } catch (e: Exception) {
             Log.e(TAG, "Erreur lors du renvoi complet: ${e.message}")
             repostSimple(held)
@@ -260,8 +351,9 @@ class FomoNotificationService : NotificationListenerService() {
     private fun repostSimple(held: HeldNotif) {
         try {
             val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val targetChannelId = determineChannelId(held)
             val builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Notification.Builder(this, CHANNEL_ID)
+                Notification.Builder(this, targetChannelId)
             } else {
                 @Suppress("DEPRECATION")
                 Notification.Builder(this)
@@ -270,9 +362,9 @@ class FomoNotificationService : NotificationListenerService() {
                 .setContentText(getString(R.string.msg_restored))
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setAutoCancel(true)
-            nm.notify(held.tag, held.id, builder.build())
+
+            val uniqueTag = "fomo_${held.packageName}_${held.tag ?: ""}"
+            nm.notify(uniqueTag, held.id, builder.build())
         } catch (e: Exception) { /* Echec total */ }
     }
-
-
 }

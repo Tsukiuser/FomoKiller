@@ -1,0 +1,94 @@
+[
+    {
+        "merged": "com.fomokiller.wear-release-34:/drawable-night_btn_stroke_selector.xml.flat",
+        "source": "com.fomokiller.wear-main-35:/drawable-night/btn_stroke_selector.xml"
+    },
+    {
+        "merged": "com.fomokiller.wear-release-34:/drawable-night_btn_bg_selector.xml.flat",
+        "source": "com.fomokiller.wear-main-35:/drawable-night/btn_bg_selector.xml"
+    },
+    {
+        "merged": "com.fomokiller.wear-release-34:/mipmap-xxhdpi_ic_launcher_round.xml.flat",
+        "source": "com.fomokiller.wear-main-35:/mipmap-xxhdpi/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.fomokiller.wear-release-34:/drawable_btn_bg_selector.xml.flat",
+        "source": "com.fomokiller.wear-main-35:/drawable/btn_bg_selector.xml"
+    },
+    {
+        "merged": "com.fomokiller.wear-release-34:/drawable_ic_handle.xml.flat",
+        "source": "com.fomokiller.wear-main-35:/drawable/ic_handle.xml"
+    },
+    {
+        "merged": "com.fomokiller.wear-release-34:/mipmap-mdpi_ic_launcher_round.xml.flat",
+        "source": "com.fomokiller.wear-main-35:/mipmap-mdpi/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.fomokiller.wear-release-34:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.fomokiller.wear-main-35:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.fomokiller.wear-release-34:/mipmap-xhdpi_ic_launcher.xml.flat",
+        "source": "com.fomokiller.wear-main-35:/mipmap-xhdpi/ic_launcher.xml"
+    },
+    {
+        "merged": "com.fomokiller.wear-release-34:/drawable_bg_card_inactive.xml.flat",
+        "source": "com.fomokiller.wear-main-35:/drawable/bg_card_inactive.xml"
+    },
+    {
+        "merged": "com.fomokiller.wear-release-34:/drawable-night_btn_text_selector.xml.flat",
+        "source": "com.fomokiller.wear-main-35:/drawable-night/btn_text_selector.xml"
+    },
+    {
+        "merged": "com.fomokiller.wear-release-34:/mipmap-hdpi_ic_launcher_round.xml.flat",
+        "source": "com.fomokiller.wear-main-35:/mipmap-hdpi/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.fomokiller.wear-release-34:/drawable_btn_text_selector.xml.flat",
+        "source": "com.fomokiller.wear-main-35:/drawable/btn_text_selector.xml"
+    },
+    {
+        "merged": "com.fomokiller.wear-release-34:/mipmap-hdpi_ic_launcher.xml.flat",
+        "source": "com.fomokiller.wear-main-35:/mipmap-hdpi/ic_launcher.xml"
+    },
+    {
+        "merged": "com.fomokiller.wear-release-34:/drawable_ic_tile_fomo.xml.flat",
+        "source": "com.fomokiller.wear-main-35:/drawable/ic_tile_fomo.xml"
+    },
+    {
+        "merged": "com.fomokiller.wear-release-34:/drawable_bg_card_active.xml.flat",
+        "source": "com.fomokiller.wear-main-35:/drawable/bg_card_active.xml"
+    },
+    {
+        "merged": "com.fomokiller.wear-release-34:/mipmap-xxxhdpi_ic_launcher.xml.flat",
+        "source": "com.fomokiller.wear-main-35:/mipmap-xxxhdpi/ic_launcher.xml"
+    },
+    {
+        "merged": "com.fomokiller.wear-release-34:/mipmap-mdpi_ic_launcher.xml.flat",
+        "source": "com.fomokiller.wear-main-35:/mipmap-mdpi/ic_launcher.xml"
+    },
+    {
+        "merged": "com.fomokiller.wear-release-34:/layout_activity_main.xml.flat",
+        "source": "com.fomokiller.wear-main-35:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.fomokiller.wear-release-34:/drawable_btn_stroke_selector.xml.flat",
+        "source": "com.fomokiller.wear-main-35:/drawable/btn_stroke_selector.xml"
+    },
+    {
+        "merged": "com.fomokiller.wear-release-34:/mipmap-xxhdpi_ic_launcher.xml.flat",
+        "source": "com.fomokiller.wear-main-35:/mipmap-xxhdpi/ic_launcher.xml"
+    },
+    {
+        "merged": "com.fomokiller.wear-release-34:/mipmap-xxxhdpi_ic_launcher_round.xml.flat",
+        "source": "com.fomokiller.wear-main-35:/mipmap-xxxhdpi/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.fomokiller.wear-release-34:/mipmap-xhdpi_ic_launcher_round.xml.flat",
+        "source": "com.fomokiller.wear-main-35:/mipmap-xhdpi/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.fomokiller.wear-release-34:/drawable_bg_subtext_scrim.xml.flat",
+        "source": "com.fomokiller.wear-main-35:/drawable/bg_subtext_scrim.xml"
+    }
+]

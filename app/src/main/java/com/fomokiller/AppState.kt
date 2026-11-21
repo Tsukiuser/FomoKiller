@@ -78,6 +78,9 @@ object AppState {
         set(value) = prefs.edit().putStringSet(KEY_VIP_APPS, value).apply()
 
     fun shouldBlockNotification(packageName: String, title: String? = null, text: String? = null): Boolean {
+        // En mode OFF, rien n'est jamais bloqué
+        if (currentMode == FomoMode.OFF) return false
+
         if (ALWAYS_ALLOWED_PACKAGES.contains(packageName)) return false
         
         val content = "${title ?: ""} ${text ?: ""}".lowercase()

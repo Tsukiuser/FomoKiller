@@ -17,12 +17,15 @@ import android.provider.Settings
 import android.service.notification.NotificationListenerService
 import android.text.Html
 import android.text.method.LinkMovementMethod
-import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.VelocityTracker
 import android.view.View
+import android.view.ViewConfiguration
 import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
 import android.widget.CheckBox
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -52,11 +55,17 @@ import com.google.android.gms.wearable.Wearable
 
 class MainActivity : AppCompatActivity() {
 
-
     private lateinit var binding: ActivityMainBinding
     private lateinit var settingsBehavior: BottomSheetBehavior<View>
     private var isKeywordsOpen = false
-    private lateinit var gestureDetector: GestureDetector
+
+    // Direct 1:1 modal drag & snap state
+    private var touchDownX = 0f
+    private var touchDownY = 0f
+    private var isDraggingSettings = false
+    private var isDraggingKeywords = false
+    private var hasDecidedDrag = false
+    private var velocityTracker: VelocityTracker? = null
 
     private var currentConfigMode = FomoMode.KILL_ALL
     private var isBlockAction = false
@@ -122,7 +131,7 @@ class MainActivity : AppCompatActivity() {
                 val mode = FomoMode.valueOf(modeStr)
                 runOnUiThread {
                     AppState.currentMode = mode
-                    FomoNotificationService.instance?.applyCurrentMode()
+                    FomoNotificationService.triggerApplyMode(this@MainActivity)
                     updateUI()
                     WearSyncHelper.broadcastModeToWear(this, mode)
                 }
@@ -142,7 +151,7 @@ class MainActivity : AppCompatActivity() {
                         val mode = FomoMode.valueOf(modeStr)
                         runOnUiThread {
                             AppState.currentMode = mode
-                            FomoNotificationService.instance?.applyCurrentMode()
+                            FomoNotificationService.triggerApplyMode(this@MainActivity)
                             updateUI()
                             WearSyncHelper.broadcastModeToWear(this, mode)
                         }
@@ -163,7 +172,6 @@ class MainActivity : AppCompatActivity() {
         
         setupSettingsPanel()
         setupKeywordsPanel()
-        setupGestureDetector()
         
         AppState.openCount++
         if (AppState.openCount % 6 == 0 && !isIgnoringBatteryOptimizations()) {
@@ -174,7 +182,9 @@ class MainActivity : AppCompatActivity() {
         updateUI()
 
         // Fetch Gist notes if internet is available
-        RemoteManager.fetchNotesIfAvailable(this)
+        RemoteManager.fetchNotesIfAvailable(this) {
+            runOnUiThread { updateMessageTile() }
+        }
 
         // Check for updates if allowed by user and on Wi-Fi
         checkForUpdatesIfAllowed()
@@ -188,36 +198,6 @@ class MainActivity : AppCompatActivity() {
         } else {
             ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
-    }
-
-    private fun setupGestureDetector() {
-        gestureDetector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
-            override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
-                // Désactiver les gestes en paysage car tout est visible
-                if (resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE) {
-                    return false
-                }
-
-                if (e1 != null) {
-                    val diffY = e2.y - e1.y
-                    // Swipe UP -> Close keywords if open, or open Settings
-                    if (diffY < -100 && Math.abs(velocityY) > 100) {
-                        if (isKeywordsOpen) {
-                            toggleKeywords(false)
-                        } else if (::settingsBehavior.isInitialized) {
-                            settingsBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-                        }
-                        return true
-                    }
-                    // Swipe DOWN -> Keywords (Top to Down)
-                    if (diffY > 100 && Math.abs(velocityY) > 100) {
-                        toggleKeywords(true)
-                        return true
-                    }
-                }
-                return false
-            }
-        })
     }
 
     private fun toggleKeywords(open: Boolean) {
@@ -275,38 +255,44 @@ class MainActivity : AppCompatActivity() {
     private fun setupKeywordsPanel() {
         val keywordsPanel = findViewById<View>(R.id.keywordsPanel) ?: return
         
-        // Initial state: Hidden above screen (Uniquement en portrait)
+        // Initial state: Hidden above screen with 70% max height (Uniquement en portrait)
         if (resources.configuration.orientation != android.content.res.Configuration.ORIENTATION_LANDSCAPE) {
-            keywordsPanel.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
-                override fun onLayoutChange(v: View, l: Int, t: Int, r: Int, b: Int, ol: Int, ot: Int, or: Int, ob: Int) {
-                    if (!isKeywordsOpen) {
-                        keywordsPanel.translationY = -keywordsPanel.height.toFloat()
-                    }
-                    keywordsPanel.removeOnLayoutChangeListener(this)
+            val maxHeight = (resources.displayMetrics.heightPixels * 0.7f).toInt()
+            keywordsPanel.post {
+                val params = keywordsPanel.layoutParams
+                params.height = maxHeight
+                keywordsPanel.layoutParams = params
+                if (!isKeywordsOpen) {
+                    keywordsPanel.translationY = -maxHeight.toFloat()
                 }
-            })
+            }
         }
 
         findViewById<View>(R.id.keywordsHandle)?.apply {
             findViewById<View>(R.id.handleIndicator).alpha = 0.8f
             setOnClickListener { toggleKeywords(false) }
             
-            // Drag gesture on handle to follow finger slowly
+            // Drag gesture on handle to follow finger slowly with snap
             var startY = 0f
             var initialTranslationY = 0f
             var isDragging = false
+            var handleVelocityTracker: VelocityTracker? = null
             
-            setOnTouchListener { view, event ->
+            setOnTouchListener { _, event ->
                 val panel = findViewById<View>(R.id.keywordsPanel) ?: return@setOnTouchListener false
                 val scrim = findViewById<View>(R.id.settingsScrim)
-                when (event.action) {
+                when (event.actionMasked) {
                     MotionEvent.ACTION_DOWN -> {
                         startY = event.rawY
                         initialTranslationY = panel.translationY
                         isDragging = true
+                        handleVelocityTracker?.recycle()
+                        handleVelocityTracker = VelocityTracker.obtain()
+                        handleVelocityTracker?.addMovement(event)
                         true
                     }
                     MotionEvent.ACTION_MOVE -> {
+                        handleVelocityTracker?.addMovement(event)
                         if (isDragging) {
                             val deltaY = event.rawY - startY
                             val newY = (initialTranslationY + deltaY).coerceIn(-panel.height.toFloat(), 0f)
@@ -320,13 +306,20 @@ class MainActivity : AppCompatActivity() {
                     MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                         if (isDragging) {
                             isDragging = false
+                            handleVelocityTracker?.addMovement(event)
+                            handleVelocityTracker?.computeCurrentVelocity(1000)
+                            val vy = handleVelocityTracker?.yVelocity ?: 0f
+                            handleVelocityTracker?.recycle()
+                            handleVelocityTracker = null
+
                             val currentY = panel.translationY
-                            val halfHeight = -panel.height.toFloat() / 2f
-                            // If dragged more than halfway down, open fully; otherwise close
-                            if (currentY > halfHeight) {
-                                toggleKeywords(true)
-                            } else {
+                            val panelHeight = panel.height.toFloat()
+                            val progress = if (panelHeight > 0) 1f - (-currentY / panelHeight) else 0f
+                            // Snap to close if dragged up past 35% or flicked up
+                            if (vy < -600f || progress < 0.65f) {
                                 toggleKeywords(false)
+                            } else {
+                                toggleKeywords(true)
                             }
                         }
                         true
@@ -354,7 +347,7 @@ class MainActivity : AppCompatActivity() {
                         updated.remove(word)
                         AppState.setKeywords(currentConfigMode, isBlockAction, updated)
                         refreshChips()
-                        FomoNotificationService.instance?.applyCurrentMode()
+                        FomoNotificationService.triggerApplyMode(this@MainActivity)
                     }
                 }
                 chipGroup.addView(chip)
@@ -383,7 +376,7 @@ class MainActivity : AppCompatActivity() {
                 AppState.setKeywords(currentConfigMode, isBlockAction, updated)
                 editKeyword.setText("")
                 refreshChips()
-                FomoNotificationService.instance?.applyCurrentMode()
+                FomoNotificationService.triggerApplyMode(this@MainActivity)
             }
         }
 
@@ -391,15 +384,254 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        // Le geste ne fonctionne que si aucune autre modale n'est ouverte
-        val isSettingsHidden = if (::settingsBehavior.isInitialized) {
-            settingsBehavior.state == BottomSheetBehavior.STATE_HIDDEN || settingsBehavior.state == BottomSheetBehavior.STATE_SETTLING
+        // En paysage, pas de geste modale
+        if (resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE) {
+            return super.dispatchTouchEvent(ev)
+        }
+
+        val isSettingsClosed = if (::settingsBehavior.isInitialized) {
+            settingsBehavior.state == BottomSheetBehavior.STATE_HIDDEN
         } else true
-        
-        if (isSettingsHidden && !isKeywordsOpen) {
-            gestureDetector.onTouchEvent(ev)
+
+        // Si une modale est déjà ouverte, laisser les vues internes gérer les clics/scroll
+        if (!isSettingsClosed || isKeywordsOpen) {
+            return super.dispatchTouchEvent(ev)
+        }
+
+        when (ev.actionMasked) {
+            MotionEvent.ACTION_DOWN -> {
+                touchDownX = ev.rawX
+                touchDownY = ev.rawY
+                isDraggingSettings = false
+                isDraggingKeywords = false
+                hasDecidedDrag = false
+                velocityTracker?.recycle()
+                velocityTracker = VelocityTracker.obtain()
+                velocityTracker?.addMovement(ev)
+                // Transmettre impérativement aux boutons pour qu'ils s'enclenchent (clic / appui long)
+                return super.dispatchTouchEvent(ev)
+            }
+            MotionEvent.ACTION_MOVE -> {
+                velocityTracker?.addMovement(ev)
+                val dx = ev.rawX - touchDownX
+                val dy = ev.rawY - touchDownY
+                val touchSlop = ViewConfiguration.get(this).scaledTouchSlop
+
+                if (!hasDecidedDrag) {
+                    if (kotlin.math.abs(dy) > touchSlop && kotlin.math.abs(dy) > kotlin.math.abs(dx) * 1.2f) {
+                        hasDecidedDrag = true
+                        if (dy < 0) {
+                            // Vers le haut -> Modale Paramètres
+                            isDraggingSettings = true
+                        } else {
+                            // Vers le bas -> Modale Filtrage Intelligent
+                            isDraggingKeywords = true
+                        }
+
+                        // Annuler l'appui sur les boutons sous-jacents pour éviter un faux clic
+                        val cancelEvent = MotionEvent.obtain(
+                            ev.downTime,
+                            ev.eventTime,
+                            MotionEvent.ACTION_CANCEL,
+                            ev.x,
+                            ev.y,
+                            0
+                        )
+                        super.dispatchTouchEvent(cancelEvent)
+                        cancelEvent.recycle()
+                    } else if (kotlin.math.abs(dx) > touchSlop && kotlin.math.abs(dx) > kotlin.math.abs(dy)) {
+                        // Déplacement horizontal : laisser le système gérer sans interférence
+                        hasDecidedDrag = true
+                        isDraggingSettings = false
+                        isDraggingKeywords = false
+                    }
+                }
+
+                if (isDraggingSettings) {
+                    val bottomSheet = findViewById<View>(R.id.settingsBottomSheet)
+                    val scrim = findViewById<View>(R.id.settingsScrim)
+                    if (bottomSheet != null) {
+                        val parentHeight = (bottomSheet.parent as? View)?.height ?: resources.displayMetrics.heightPixels
+                        val sheetHeight = when {
+                            bottomSheet.height > 0 -> bottomSheet.height
+                            bottomSheet.measuredHeight > 0 -> bottomSheet.measuredHeight
+                            else -> (resources.displayMetrics.heightPixels * 0.6f).toInt()
+                        }
+                        if (sheetHeight > 0) {
+                            val dragAmount = (touchDownY - ev.rawY).toInt().coerceIn(0, sheetHeight)
+                            val targetTop = parentHeight - dragAmount
+                            val dy = targetTop - bottomSheet.top
+                            if (dy != 0) {
+                                bottomSheet.offsetTopAndBottom(dy)
+                            }
+                            val progress = dragAmount.toFloat() / sheetHeight
+                            scrim?.visibility = if (progress > 0.01f) View.VISIBLE else View.GONE
+                            scrim?.alpha = progress * 0.6f
+                        }
+                    }
+                    return true
+                }
+
+                if (isDraggingKeywords) {
+                    val panel = findViewById<View>(R.id.keywordsPanel)
+                    val scrim = findViewById<View>(R.id.settingsScrim)
+                    if (panel != null) {
+                        val panelHeight = when {
+                            panel.height > 0 -> panel.height.toFloat()
+                            panel.measuredHeight > 0 -> panel.measuredHeight.toFloat()
+                            else -> resources.displayMetrics.heightPixels * 0.7f
+                        }
+                        if (panelHeight > 0) {
+                            val dragAmount = (ev.rawY - touchDownY).coerceIn(0f, panelHeight)
+                            panel.translationY = -panelHeight + dragAmount
+                            val progress = (dragAmount / panelHeight).coerceIn(0f, 1f)
+                            scrim?.visibility = if (progress > 0.01f) View.VISIBLE else View.GONE
+                            scrim?.alpha = progress * 0.6f
+                        }
+                    }
+                    return true
+                }
+
+                return super.dispatchTouchEvent(ev)
+            }
+            MotionEvent.ACTION_UP -> {
+                velocityTracker?.addMovement(ev)
+                velocityTracker?.computeCurrentVelocity(1000)
+                val vy = velocityTracker?.yVelocity ?: 0f
+                val wasDraggingSettings = isDraggingSettings
+                val wasDraggingKeywords = isDraggingKeywords
+
+                isDraggingSettings = false
+                isDraggingKeywords = false
+                hasDecidedDrag = false
+
+                if (wasDraggingSettings) {
+                    val bottomSheet = findViewById<View>(R.id.settingsBottomSheet)
+                    if (bottomSheet != null) {
+                        val parentHeight = (bottomSheet.parent as? View)?.height ?: resources.displayMetrics.heightPixels
+                        val sheetHeight = when {
+                            bottomSheet.height > 0 -> bottomSheet.height
+                            bottomSheet.measuredHeight > 0 -> bottomSheet.measuredHeight
+                            else -> (resources.displayMetrics.heightPixels * 0.6f).toInt()
+                        }
+                        val currentDragged = parentHeight - bottomSheet.top
+                        val progress = if (sheetHeight > 0) currentDragged.toFloat() / sheetHeight else 0f
+                        val shouldOpen = progress > 0.35f || vy < -600f
+
+                        bottomSheet.translationY = 0f
+                        if (shouldOpen) {
+                            bottomSheet.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
+                            settingsBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                        } else {
+                            settingsBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                        }
+                    }
+                    velocityTracker?.recycle()
+                    velocityTracker = null
+                    return true
+                }
+
+                if (wasDraggingKeywords) {
+                    val panel = findViewById<View>(R.id.keywordsPanel)
+                    val scrim = findViewById<View>(R.id.settingsScrim)
+                    if (panel != null) {
+                        val panelHeight = when {
+                            panel.height > 0 -> panel.height.toFloat()
+                            panel.measuredHeight > 0 -> panel.measuredHeight.toFloat()
+                            else -> resources.displayMetrics.heightPixels * 0.6f
+                        }
+                        val currentOffset = panel.translationY + panelHeight
+                        val progress = if (panelHeight > 0) (currentOffset / panelHeight).coerceIn(0f, 1f) else 0f
+                        val shouldOpen = progress > 0.35f || vy > 600f
+
+                        if (shouldOpen) {
+                            // Snap to OPEN
+                            panel.animate()
+                                .translationY(0f)
+                                .setDuration(220)
+                                .setInterpolator(DecelerateInterpolator())
+                                .withStartAction {
+                                    panel.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
+                                    panel.elevation = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16f, resources.displayMetrics)
+                                }
+                                .withEndAction {
+                                    isKeywordsOpen = true
+                                }
+                                .start()
+
+                            scrim?.animate()
+                                ?.alpha(0.6f)
+                                ?.setDuration(220)
+                                ?.start()
+                        } else {
+                            // Snap to CLOSE
+                            panel.animate()
+                                .translationY(-panelHeight)
+                                .setDuration(200)
+                                .setInterpolator(DecelerateInterpolator())
+                                .withEndAction {
+                                    isKeywordsOpen = false
+                                    panel.elevation = 0f
+                                    scrim?.visibility = View.GONE
+                                }
+                                .start()
+
+                            scrim?.animate()
+                                ?.alpha(0f)
+                                ?.setDuration(200)
+                                ?.withEndAction {
+                                    scrim.visibility = View.GONE
+                                }
+                                ?.start()
+                        }
+                    }
+                    velocityTracker?.recycle()
+                    velocityTracker = null
+                    return true
+                }
+
+                velocityTracker?.recycle()
+                velocityTracker = null
+
+                // Clic simple ou appui long non dragué : super.dispatchTouchEvent transmet au bouton !
+                return super.dispatchTouchEvent(ev)
+            }
+            MotionEvent.ACTION_CANCEL -> {
+                if (isDraggingSettings) {
+                    val bottomSheet = findViewById<View>(R.id.settingsBottomSheet)
+                    bottomSheet?.translationY = 0f
+                    if (::settingsBehavior.isInitialized) {
+                        settingsBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                    }
+                }
+                if (isDraggingKeywords) {
+                    val panel = findViewById<View>(R.id.keywordsPanel)
+                    val scrim = findViewById<View>(R.id.settingsScrim)
+                    panel?.let { p ->
+                        val panelHeight = when {
+                            p.height > 0 -> p.height.toFloat()
+                            p.measuredHeight > 0 -> p.measuredHeight.toFloat()
+                            else -> resources.displayMetrics.heightPixels * 0.6f
+                        }
+                        p.animate()?.translationY(-panelHeight)?.setDuration(150)?.start()
+                    }
+                    scrim?.animate()?.alpha(0f)?.setDuration(150)?.withEndAction { scrim.visibility = View.GONE }?.start()
+                }
+                isDraggingSettings = false
+                isDraggingKeywords = false
+                hasDecidedDrag = false
+                velocityTracker?.recycle()
+                velocityTracker = null
+                return super.dispatchTouchEvent(ev)
+            }
         }
         return super.dispatchTouchEvent(ev)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        velocityTracker?.recycle()
+        velocityTracker = null
     }
 
     private fun setupSettingsPanel() {
@@ -416,7 +648,6 @@ class MainActivity : AppCompatActivity() {
                     scrim.visibility = View.VISIBLE
                     if (newState == BottomSheetBehavior.STATE_EXPANDED) {
                         bottomSheet.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
-                        updateMessageTile()
                     }
                 }
             }
@@ -656,6 +887,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun showBatteryTipSheet() {
         val dialog = BottomSheetDialog(this)
+        dialog.setOnShowListener { d ->
+            val bottomSheet = (d as BottomSheetDialog).findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+            bottomSheet?.background = null
+        }
         val view = layoutInflater.inflate(R.layout.bottom_sheet_battery_tip, null)
         dialog.setContentView(view)
 
@@ -724,6 +959,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun showRestrictedSettingsTip() {
         val dialog = BottomSheetDialog(this)
+        dialog.setOnShowListener { d ->
+            val bottomSheet = (d as BottomSheetDialog).findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+            bottomSheet?.background = null
+        }
         val view = layoutInflater.inflate(R.layout.bottom_sheet_restricted_settings, null)
         dialog.setContentView(view)
 
@@ -792,21 +1031,16 @@ class MainActivity : AppCompatActivity() {
         AppState.currentMode = mode
         WearSyncHelper.broadcastModeToWear(this, mode)
         
-        val service = FomoNotificationService.instance
-
-        if (service != null) {
-            service.applyCurrentMode()
-        } else {
-            // Si le service n'est pas lié, on demande au système de le relancer
-            val componentName = ComponentName(this, FomoNotificationService::class.java)
-            NotificationListenerService.requestRebind(componentName)
-            Toast.makeText(this, getString(R.string.toast_initializing), Toast.LENGTH_SHORT).show()
-        }
+        FomoNotificationService.triggerApplyMode(this)
         updateUI()
     }
 
     private fun showAppPickerSheet(mode: String) {
         val dialog = BottomSheetDialog(this)
+        dialog.setOnShowListener { d ->
+            val bottomSheet = (d as BottomSheetDialog).findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+            bottomSheet?.background = null
+        }
         val sheetView = layoutInflater.inflate(R.layout.bottom_sheet_app_picker, null)
         dialog.setContentView(sheetView)
 
@@ -874,13 +1108,7 @@ class MainActivity : AppCompatActivity() {
             else AppState.vipApps = selectedApps.toSet()
             
             // Réappliquer immédiatement
-            val service = FomoNotificationService.instance
-            if (service != null) {
-                service.applyCurrentMode()
-            } else {
-                val componentName = ComponentName(this, FomoNotificationService::class.java)
-                NotificationListenerService.requestRebind(componentName)
-            }
+            FomoNotificationService.triggerApplyMode(this)
 
             updateUI()
             dialog.dismiss()

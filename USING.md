@@ -1,50 +1,50 @@
-# 📖 Guide d'utilisation : Maîtrisez la gestion de vos notifications
+# 📖 User Guide: Master Your Notification Management
 
-Bienvenue dans le guide officiel de l'application ! Découvrez comment reprendre le contrôle sur votre attention grâce à une interface intuitive divisée en **3 zones principales**, accessibles par de simples gestes tactiles.
+Welcome to the official app guide! Learn how to take back control of your attention with an intuitive interface divided into **3 main areas**, accessible via simple touch gestures.
 
 ---
 
-## 1. 🏠 L'écran d'accueil : Choisissez votre mode de concentration
+## 1. 🏠 Home Screen: Choose Your Focus Mode
 
-L'écran principal vous permet de basculer instantanément entre **3 modes de filtrage des notifications** grâce à trois boutons dédiés :
+The main screen lets you instantly toggle between **3 notification filtering modes** using dedicated buttons:
 
-| Mode | État | Fonctionnement |
+| Mode | State | How It Works |
 | :--- | :---: | :--- |
-| **Désactivé** | ⚪ | Aucun filtrage. Vous recevez toutes vos notifications normalement. |
-| **Activé** | 🔵 | **Mode Liste Noire :** Bloque uniquement les notifications des applications que vous avez sélectionnées. |
-| **Protégé** | 🛡️ | **Mode Liste Blanche (Concentration maximale) :** Bloque *toutes* les notifications, **SAUF** celles des applications autorisées. |
+| **Off** | ⚪ | No filtering. You receive all your notifications normally. |
+| **On** | 🔵 | **Blacklist Mode:** Blocks notifications only from the apps you have selected. |
+| **Protected** | 🛡️ | **Whitelist Mode (Maximum Focus):** Blocks *all* notifications, **EXCEPT** those from allowed apps. |
 
-> 💡 **Astuce de configuration :** Pour choisir les applications associées aux modes *Activé* ou *Protégé*, effectuez un **appui long** sur le bouton du mode souhaité.
-
----
-
-## 2. ⚙️ Les paramètres généraux : Personnalisez votre expérience
-
-Accessible depuis un menu contextuel, cette section vous permet d'ajuster le comportement global de l'application et des raccourcis système.
-
-* **Comment l'ouvrir ?** 👉 **Glissez votre doigt vers le haut** depuis l'écran principal.
-
-### Options disponibles :
-* **🔄 Restaurer les notifications :** Récupérez automatiquement l'historique des notifications bloquées dès que vous désactivez le filtrage.
-* **🎛️ Mode de la tuile rapide :** Définissez quel mode (*Activé* ou *Protégé*) se déclenche lorsque vous utilisez le raccourci dans le panneau de configuration rapide de votre téléphone.
-* **🚀 Mises à jour automatiques :** Activez la vérification en arrière-plan pour être alerté dès qu'une nouvelle version de l'application est disponible.
+> 💡 **Setup Tip:** To choose which apps are associated with *On* or *Protected* mode, **press and hold** the corresponding mode button.
 
 ---
 
-## 3. 🔍 Le filtrage par mots-clés : Un contrôle ultra-précis
+## 2. ⚙️ General Settings: Customize Your Experience
 
-Affinez le blocage de vos alertes en filtrant le contenu même des messages reçus, indépendamment des applications.
+Accessible via a bottom sheet, this section lets you fine-tune the app's overall behavior and system shortcuts.
 
-* **Comment l'ouvrir ?** 👇 **Glissez votre doigt vers le bas** depuis l'écran principal.
+* **How to open it?** 👉 **Swipe up** from the main screen.
 
-### Étapes de configuration :
-1. **Sélectionnez le mode cible :** Choisissez si la règle s'applique au mode **Activé** ou au mode **Protégé**.
-2. **Définissez le type de liste :** 
-   * *Liste d'autorisation :* Laisse passer les notifications contenant ces mots.
-   * *Liste d'interdiction :* Bloque systématiquement les notifications contenant ces mots.
-3. **Ajoutez vos mots-clés :** Saisissez un terme dans la barre de recherche dédiée pour l'enregistrer.
-4. **Gérez votre liste :** Vos mots-clés actifs s'affichent au bas de l'écran. Appuyez simplement sur la croix (`✖️`) à côté d'un mot pour le supprimer.
+### Available Options:
+* **🔄 Restore Notifications:** Automatically restore blocked notifications as soon as you turn off filtering.
+* **🎛️ Quick Settings Tile Mode:** Choose which mode (*On* or *Protected*) is triggered when tapping the tile in your phone's Quick Settings panel.
+* **🚀 Automatic Updates:** Enable background checks to get notified whenever a new app version is available.
 
 ---
 
-🎉 **Vous maîtrisez maintenant toutes les fonctionnalités de l'application !** Configurez vos profils dès maintenant et profitez d'une tranquillité numérique sur mesure.
+## 3. 🔍 Keyword Filtering: Ultra-Precise Control
+
+Fine-tune how alerts are blocked by filtering based on message content, regardless of the app.
+
+* **How to open it?** 👇 **Swipe down** from the main screen.
+
+### Configuration Steps:
+1. **Select the target mode:** Choose whether the rule applies to **On** or **Protected** mode.
+2. **Define the list type:** 
+   * *Allow list:* Lets notifications containing these words through.
+   * *Block list:* Always blocks notifications containing these words.
+3. **Add your keywords:** Enter a term into the text field to save it.
+4. **Manage your list:** Your active keywords appear at the bottom of the screen. Simply tap the cross (`✖️`) next to a keyword to remove it.
+
+---
+
+🎉 **You are now all set to make the most of the app!** Configure your profiles and enjoy tailored digital peace of mind.

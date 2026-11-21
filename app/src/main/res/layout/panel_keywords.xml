@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_custom_modal_bottom"
+    android:clipToOutline="true"
     android:elevation="0dp"
     android:orientation="vertical"
     android:clickable="true"
@@ -23,12 +24,6 @@
             <include layout="@layout/content_keywords" />
         </androidx.core.widget.NestedScrollView>
 
-        <!-- Overlay fondu au scroll : fait disparaître doucement le contenu avant la poignée -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="24dp"
-            android:layout_gravity="bottom"
-            android:background="@drawable/scrim_modal_fade_bottom" />
     </FrameLayout>
 
     <!-- Universal Handle at the bottom of top sheet -->

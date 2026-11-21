@@ -52,11 +52,7 @@ class FomoTileService : TileService() {
         WearSyncHelper.broadcastModeToWear(this, newMode)
         
         // Notifier le service de notification
-
-        val service = FomoNotificationService.instance
-        if (service != null) {
-            service.applyCurrentMode()
-        }
+        FomoNotificationService.triggerApplyMode(this)
         
         // Diffuser un broadcast pour l'UI (MainActivity)
         sendBroadcast(Intent(FomoNotificationService.ACTION_STATE_CHANGED))

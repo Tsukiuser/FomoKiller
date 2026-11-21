@@ -19,8 +19,7 @@ class FomoActionReceiver : BroadcastReceiver() {
         AppState.currentMode = mode
         
         // Appliquer le mode au service
-        val service = FomoNotificationService.instance
-        service?.applyCurrentMode()
+        FomoNotificationService.triggerApplyMode(context)
         
         // Mettre à jour la tuile (Quick Settings)
         val tileIntent = Intent(context, FomoTileService::class.java)
