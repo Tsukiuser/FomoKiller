@@ -12,7 +12,7 @@ android {
         minSdk 26
         targetSdk 34
         versionCode 1
-        versionName "1.44.156"
+        versionName "1.49.163"
     }
 
     buildTypes {
